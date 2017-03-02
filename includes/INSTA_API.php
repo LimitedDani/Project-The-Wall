@@ -2049,7 +2049,7 @@ class article {
                 $icon = 'favorite_border';
             }
             $like = '';
-            if(article::isLiking($mysqli, $id, $_SESSION['UUID'])) {
+            if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
                 $like = 'unlike';
             } else {
                 $like = 'like';
@@ -2105,7 +2105,7 @@ class article {
                         $icon = 'favorite_border';
                     }
                     $like = '';
-                    if(article::isLiking($mysqli, $id, $_SESSION['UUID'])) {
+                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
                         $like = 'unlike';
                     } else {
                         $like = 'like';
@@ -2158,7 +2158,7 @@ class article {
                         $icon = 'favorite_border';
                     }
                     $like = '';
-                    if(article::isLiking($mysqli, $id, $_SESSION['UUID'])) {
+                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
                         $like = 'unlike';
                     } else {
                         $like = 'like';
