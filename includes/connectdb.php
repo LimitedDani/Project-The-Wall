@@ -7,7 +7,7 @@ $db_name="pco";*/
 $host="localhost";
 $username="settlerc_pco";
 $password="zIGoDuOA";
-$db_name="settlerc_insta";
+$db_name=/*"settlerc_insta"*/"insta";
 
 
 $mysqli = mysqli_connect($host, $username, $password) or die(mysqli_connect_error());
