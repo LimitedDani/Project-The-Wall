@@ -49,7 +49,7 @@ $active = 'home';
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ParkCraft Online</title>
+    <title>InstaWall</title>
     <?php include 'includes/imports.php';?>
     <link href="includes/css/login.css" rel="stylesheet">
 </head>

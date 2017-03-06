@@ -15,7 +15,7 @@ class user {
             $row = mysqli_fetch_assoc($result);
             if($count > 0) {
                 if(!user::hasAccess($mysqli, $row['UUID'])) {
-                    header("Location: index.php?warning=Je hebt geen toegang tot ParkCraft Online.");
+                    header("Location: index.php?warning=Je hebt geen toegang tot InstaWall.");
                     exit;
                 }
                 session_start();
@@ -57,7 +57,7 @@ class user {
             $row = mysqli_fetch_assoc($result);
             if($count > 0) {
                 if(!user::hasAccess($mysqli, $row['UUID'])) {
-                    header("Location: index.php?warning=Je hebt geen toegang tot ParkCraft Online.");
+                    header("Location: index.php?warning=Je hebt geen toegang tot InstaWall.");
                     exit;
                 }
                 session_start();
@@ -341,7 +341,7 @@ class user {
         <meta name="viewport" content="width=device-width" />
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Parkcraft Online</title>
+        <title>InstaWall</title>
 
         </head>
 
@@ -579,7 +579,7 @@ class user {
                 <td class="header container" >
 
                         <div class="content">
-                            <h3><span style="color: white;">ParkCraft Online</span></h3>
+                            <h3><span style="color: white;">InstaWall</span></h3>
                         </div>
 
                 </td>
@@ -599,9 +599,9 @@ class user {
                         <tr>
                             <td>
                                 <h3>Beste, '.$name.'</h3>
-                                <p class="lead">Wat leuk dat je hebt geregistreerd op ParkCraft Online!.</p>
+                                <p class="lead">Wat leuk dat je hebt geregistreerd op InstaWall!.</p>
                                 <p>Je bent van plan om bij een van de grootste Minecraft pretpark community aan te sluiten.</p>
-                                <p>ParkCraft Online heeft de volgende functies:</p>
+                                <p>InstaWall heeft de volgende functies:</p>
                                 <ul>
                                     <li>Je favoriete parken te volgen</i>
                                     <li>Je eigen park aanmelden</i>
@@ -681,7 +681,7 @@ class user {
         <meta name="viewport" content="width=device-width" />
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Parkcraft Online</title>
+        <title>InstaWall</title>
 
         </head>
 
@@ -919,7 +919,7 @@ class user {
                 <td class="header container" >
 
                         <div class="content">
-                            <h3><span style="color: white;">ParkCraft Online</span></h3>
+                            <h3><span style="color: white;">InstaWall</span></h3>
                         </div>
 
                 </td>
@@ -1008,7 +1008,7 @@ class user {
         <meta name="viewport" content="width=device-width" />
 
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Parkcraft Online</title>
+        <title>InstaWall</title>
 
         </head>
 
@@ -1246,7 +1246,7 @@ class user {
                 <td class="header container" >
 
                         <div class="content">
-                            <h3><span style="color: white;">ParkCraft Online</span></h3>
+                            <h3><span style="color: white;">InstaWall</span></h3>
                         </div>
 
                 </td>
@@ -1516,7 +1516,7 @@ class user {
                                                     </div>
                                                 </div>
                                                 <div class="form-group">
-                                                    <label for="title" class="col-md-2 control-label"><span class="text-info">Toegang tot ParkCraft Online</span></label>
+                                                    <label for="title" class="col-md-2 control-label"><span class="text-info">Toegang tot InstaWall</span></label>
                                                     <div class="col-md-10" id="naamdiv">
                                                         <select name="ttpo" class="form-control">
                                                             <option value="1" '; if($row["access"] == 1) { echo "selected"; } echo '>Ja</option>
@@ -1569,7 +1569,7 @@ class user {
             <meta name="viewport" content="width=device-width" />
 
             <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-            <title>Parkcraft Online</title>
+            <title>InstaWall</title>
 
             </head>
 
@@ -1807,7 +1807,7 @@ class user {
                     <td class="header container" >
 
                             <div class="content">
-                                <h3><span style="color: white;">ParkCraft Online</span></h3>
+                                <h3><span style="color: white;">InstaWall</span></h3>
                             </div>
 
                     </td>

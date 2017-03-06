@@ -52,7 +52,7 @@ if(isset($_POST['newpassword'])) {
 }
 if(isset($_SESSION['user'])) {
     if(!user::hasAccess($mysqli, $_SESSION['UUID'])) {
-        $warning= "Je hebt geen toegang tot ParkCraft Online.";
+        $warning= "Je hebt geen toegang tot InstaWall.";
     } else {
         if(!user::isActivated($mysqli, $_SESSION['UUID'])) {
             $info= "Je hebt account is nog niet geactiveerd.";
@@ -79,7 +79,7 @@ if(isset($_COOKIE["pcoemail"]) && isset($_COOKIE["pcosessionid"])) {
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ParkCraft Online</title>
+    <title>InstaWall</title>
     <?php include 'includes/imports.php';?>
     <link href="includes/css/login.css" rel="stylesheet">
 </head>
@@ -109,7 +109,7 @@ if(isset($_COOKIE["pcoemail"]) && isset($_COOKIE["pcosessionid"])) {
                 </div>
             <?php } ?>
             <div class="panel panel-danger">
-                <div class="panel-heading text-center">Inloggen op ParkCraft Online</div>
+                <div class="panel-heading text-center">Inloggen op InstaWall</div>
                 <div class="panel-body">
                     <div class="row">
                         <div class="col-md-6 ">

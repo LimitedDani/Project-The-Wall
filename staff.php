@@ -144,7 +144,7 @@ if(isset($_GET['keywords'])) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>ParkCraft Online</title>
+        <title>InstaWall</title>
         <script src="assets/js/bootstrap.min.js"></script>
         <?php include 'includes/imports.php';?>
     </head>
