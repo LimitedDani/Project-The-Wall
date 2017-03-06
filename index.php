@@ -15,7 +15,7 @@ if(isset($_POST['submit'])) {
 
     $email = $_POST['email'];
     $password = $_POST['password'];
-    $redirect = '/home.php';
+    $redirect = './home.php';
     $remeberme = false;
     if(isset($_POST['rememberme'])) {
         $remeberme = true;
@@ -63,7 +63,7 @@ if(isset($_SESSION['user'])) {
     }
 }
 if(isset($_COOKIE["pcoemail"]) && isset($_COOKIE["pcosessionid"])) {
-    $redirect = '/home.php';
+    $redirect = './home.php';
     if(isset($_GET['redirect'])) {
         $redirect = $_GET['redirect'];
     }

@@ -51,7 +51,7 @@ $active = 'home';
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <?php article::loadArticles($mysqli);?>
+                                    <?php posts::loadArticles($mysqli);?>
                                 </div>
                             </div>
                         </div>

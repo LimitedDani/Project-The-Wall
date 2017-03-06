@@ -610,7 +610,7 @@ class user {
                                 </ul>
                                 <!-- Callout Panel -->
                                 <p class="callout">
-                                    Je kunt je account activeren door <a href="https://www.parkcraft.nl/activate.php?code='.$code.'">hier</a> te klikken.
+                                    Je kunt je account activeren door <a href="http://daniquedejong.nl/instawall/activate.php?code='.$code.'">hier</a> te klikken.
                                 </p><!-- /Callout Panel -->
                                 <table class="social" width="100%">
                                     <tbody><tr>
@@ -635,7 +635,7 @@ class user {
                                                     <td>
 
                                                         <h5 class="">Heb je fouten gevonden?</h5>
-                                                        <p>Email: <strong><a href="emailto:dani@parkcraft.nl">dani@parkcraft.nl</a></strong></p>
+                                                        <p>Email: <strong><a href="emailto:info@daniquedejong.nl">info@daniquedejong.nl</a></strong></p>
 
                                                     </td>
                                                 </tr>
@@ -659,7 +659,7 @@ class user {
         </html>';
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= 'From: noreply@parkcraft.nl' . "\r\n";
+        $headers .= 'From: noreply@daniquedejong.nl' . "\r\n";
         mail($to,$subject,$htmlContent,$headers);
     }
     static function sendChangePassword($mysqli, $email) {
@@ -942,7 +942,7 @@ class user {
                                 <p class="lead">Je bent je wachtwoord vergeten. Je kunt hieronder je wachtwoord verander.</p>
                                 <!-- Callout Panel -->
                                 <p class="callout">
-                                    Je kunt je wachtwoord veranderen door <a href="https://www.parkcraft.nl/index.php?changepassword=&code='.$code.'">hier</a> te klikken.
+                                    Je kunt je wachtwoord veranderen door <a href="http://daniquedejong.nl/instawall/index.php?changepassword=&code='.$code.'">hier</a> te klikken.
                                 </p><!-- /Callout Panel -->
                                 <table class="social" width="100%">
                                     <tbody><tr>
@@ -967,7 +967,7 @@ class user {
                                                     <td>
 
                                                         <h5 class="">Heb je fouten gevonden?</h5>
-                                                        <p>Email: <strong><a href="emailto:dani@parkcraft.nl">dani@parkcraft.nl</a></strong></p>
+                                                        <p>Email: <strong><a href="emailto:info@daniquedejong.nl">info@daniquedejong.nl</a></strong></p>
 
                                                     </td>
                                                 </tr>
@@ -991,7 +991,7 @@ class user {
         </html>';
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= 'From: noreply@parkcraft.nl' . "\r\n";
+        $headers .= 'From: noreply@daniquedejong.nl' . "\r\n";
         mail($to,$subject,$htmlContent,$headers);
     }
     static function sendEmail($mysqli, $email, $subject, $body) {
@@ -1291,7 +1291,7 @@ class user {
                                                     <td>
 
                                                         <h5 class="">Heb je fouten gevonden?</h5>
-                                                        <p>Email: <strong><a href="emailto:dani@parkcraft.nl">dani@parkcraft.nl</a></strong></p>
+                                                        <p>Email: <strong><a href="emailto:info@daniquedejong.nl">info@daniquedejong.nl</a></strong></p>
 
                                                     </td>
                                                 </tr>
@@ -1315,7 +1315,7 @@ class user {
         </html>';
         $headers = "MIME-Version: 1.0" . "\r\n";
         $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-        $headers .= 'From: noreply@parkcraft.nl' . "\r\n";
+        $headers .= 'From: noreply@daniquedejong.nl' . "\r\n";
         mail($to,$subject,$htmlContent,$headers);
     }
     static function loadFollowedParks($mysqli, $uuid)
@@ -1852,7 +1852,7 @@ class user {
                                                         <td>
 
                                                             <h5 class="">Heb je fouten gevonden?</h5>
-                                                            <p>Email: <strong><a href="emailto:dani@parkcraft.nl">dani@parkcraft.nl</a></strong></p>
+                                                            <p>Email: <strong><a href="emailto:info@daniquedejong.nl">info@daniquedejong.nl</a></strong></p>
 
                                                         </td>
                                                     </tr>
@@ -1876,7 +1876,7 @@ class user {
             </html>';
             $headers = "MIME-Version: 1.0" . "\r\n";
             $headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
-            $headers .= 'From: noreply@parkcraft.nl' . "\r\n";
+            $headers .= 'From: noreply@daniquedejong.nl' . "\r\n";
             mail($to, $subject, $htmlContent, $headers);
         }
     }
@@ -1936,7 +1936,18 @@ class user {
         }
     }
 }
-class article {
+class posts {
+    static function post($mysqli, $title, $image)
+    {
+        setlocale(LC_TIME, 'NL_nl');
+        if(strpos($image, 'Invalid URL') !== false) {
+            exit;
+        }
+        $title = strip_tags($title);
+        $sql = "INSERT INTO pco_posts (user_id, post_text, post_image, posted_on) VALUES ('".$_SESSION["UUID"]."', '$title', '$image', '" . strftime('%e-%m-%Y om %H:%M', time()) . "');";
+        $result = mysqli_query($mysqli, $sql);
+    }
+
     static function getParkID($mysqli, $id) {
         $sql = "SELECT * FROM pco_posts WHERE ID='$id'";
         $result = mysqli_query($mysqli, $sql);
@@ -1975,33 +1986,6 @@ class article {
         if(staff::canManagePosts($mysqli, $userid)) {
             $sql = "UPDATE pco_posts SET deleted='0' WHERE ID='$postid'";
             $result = mysqli_query($mysqli, $sql);
-        }
-    }
-    static function post($mysqli, $parkid, $title, $body, $headerimg, $bodyimg)
-    {
-        setlocale(LC_TIME, 'NL_nl');
-        if(strpos($headerimg, 'Invalid URL') !== false) {
-            $headerimg = park::getHeader($mysqli, $parkid);
-            $bodyimg = park::getHeader($mysqli, $parkid);
-        }
-        $title = strip_tags($title);
-        $sql = "INSERT INTO pco_posts (park_id, post_title, post_body, post_header, post_images, post_poster, posted_on) VALUES ('$parkid', '$title', '', '$headerimg', '$bodyimg', '" . $_SESSION['UUID'] . "', '" . strftime('%e-%m-%Y om %H:%M', time()) . "');";
-        $result = mysqli_query($mysqli, $sql);
-
-        $sql1 = "SELECT * FROM pco_posts WHERE park_id='$parkid' AND post_title='$title' order by ID desc";
-        $result1 = mysqli_query($mysqli, $sql1);
-        $row1 = mysqli_fetch_assoc($result1);
-        $splitted = str_split($body, 100);
-        for($i = 0; $i < count($splitted); $i++) {
-            $sql3 = "SELECT * FROM pco_posts WHERE park_id='$parkid' AND post_title='$title' order by ID desc";
-            $result3 = mysqli_query($mysqli, $sql3);
-            $row3 = mysqli_fetch_assoc($result3);
-            $oldbody = $row3['post_body'];
-
-            $id = $row1['ID'];
-            $newbody = $oldbody.$splitted[$i];
-            $sql2 = "UPDATE pco_posts SET post_body = '$newbody' WHERE ID='$id'";
-            $result2 = mysqli_query($mysqli, $sql2);
         }
     }
     static function exist($mysqli, $id) {
@@ -2082,39 +2066,35 @@ class article {
                         ';
         }
     }
-    static function loadArticles($mysqli) {
+    static function loadArticles($mysqli)
+    {
         $sql = "SELECT * FROM pco_posts WHERE deleted='0' order by ID desc";
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
-        if(user::isPlayerFollowingAnyPark($mysqli, $_SESSION['UUID'])) {
-            while ($row = mysqli_fetch_assoc($result)) {
-                if (user::IsFollowingPark($mysqli, $row['park_id'], $_SESSION['UUID']) && !park::isDeleted($mysqli, $row['park_id'])) {
-                    $title = $row['post_title'];
-                    $postid = $row['ID'];
-                    $parkname = park::getName($mysqli, $row['park_id']);
-                    $logo = park::getLogo($mysqli, $row['park_id']);
-                    $post = common::random(20);
-                    $postheader = $row['post_header'];
-                    if(strpos($postheader, 'Invalid URL') !== false) {
-                        $postheader = park::getHeader($mysqli, $row['park_id']);
-                    }
-                    $icon = '';
-                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
-                        $icon = 'favorite';
-                    } else {
-                        $icon = 'favorite_border';
-                    }
-                    $like = '';
-                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
-                        $like = 'unlike';
-                    } else {
-                        $like = 'like';
-                    }
-                    echo '
+        while ($row = mysqli_fetch_assoc($result)) {
+            $title = $row['post_text'];
+            $postid = $row['ID'];
+            $parkname = user::getNameByUUID($mysqli, $row['user_id']);
+            $logo = '';
+            $post = common::random(20);
+            $postheader = $row['post_image'];
+
+            $icon = '';
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+                $icon = 'favorite';
+            } else {
+                $icon = 'favorite_border';
+            }
+            $like = '';
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+                $like = 'unlike';
+            } else {
+                $like = 'like';
+            }
+            echo '
                         <div class="jumbotron hover" id="' . $post . '">
                             <div>
-                                <img class="avatar" src="' . $logo . '" alt=""/>
-                                <a href="park.php?id=' . $row['park_id'] . '" style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                                <span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                             </div>
                             <div>
                                 <div>
@@ -2126,71 +2106,16 @@ class article {
                                 var id' . $post . ' = document.getElementById("' . $post . '");
 
                                 id' . $post . '.onclick = function() {
-                                    window.location.href = "article.php?id=' . $postid . '";
+                                    window.location.href = "post.php?id=' . $postid . '";
                                 };
                             </script>
-                            <span class="shortcut"><i class="material-icons heart"><a href="article.php?id='.$postid.'&'.$like.'" style="text-decoration: none;">'.$icon.'</a></i><span><a href="article.php?id='.$postid.'&likes" style="color: #000000; text-decoration: none;">'.article::countLikes($mysqli, $postid).'</a>
-                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.article::getReactionCount($mysqli, $postid).'</span></span>
-                            <i style="float: right;">Geplaats op: '.$row["posted_on"].'</i>
+                            <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i><span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
+                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.posts::getReactionCount($mysqli, $postid).'</span></span>
+                            <i style="float: right;">Geplaats op: ' . $row["posted_on"] . '</i>
                         </div>
 
 
                         ';
-                }
-            }
-        } else {
-            echo 'Deze artikelen worden weergeven omdat je nog geen parken volgt. Je kunt parken volgen door naar de "Wie te volgen" box te kijken of door te zoeken in de navigatie balk.';
-            while ($row = mysqli_fetch_assoc($result)) {
-                if (!park::isDeleted($mysqli, $row['park_id'])) {
-                    $title = $row['post_title'];
-                    $postid = $row['ID'];
-                    $parkname = park::getName($mysqli, $row['park_id']);
-                    $logo = park::getLogo($mysqli, $row['park_id']);
-                    $post = common::random(20);
-                    $postheader = $row['post_header'];
-                    if(strpos($postheader, 'Invalid URL') !== false) {
-                        $postheader = park::getHeader($mysqli, $row['park_id']);
-                    }
-                    $icon = '';
-                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
-                        $icon = 'favorite';
-                    } else {
-                        $icon = 'favorite_border';
-                    }
-                    $like = '';
-                    if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
-                        $like = 'unlike';
-                    } else {
-                        $like = 'like';
-                    }
-                    echo '
-                        <div class="jumbotron">
-                            <div>
-                                <img class="avatar" src="' . $logo . '" alt=""/>
-                                <a href="park.php?id=' . $row['park_id'] . '" style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
-                            </div>
-                            <div class="hover" id="' . $post . '">
-                                <div>
-                                    <img src="' . $postheader . '" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
-                                </div>
-                                <h3>' . $title . '</h3>
-                            </div>
-                            <script>
-                                var id' . $post . ' = document.getElementById("' . $post . '");
-
-                                id' . $post . '.onclick = function() {
-                                    window.location.href = "article.php?id=' . $postid . '";
-                                };
-                            </script>
-                            <span class="shortcut"><i class="material-icons heart"><a href="article.php?id='.$postid.'&'.$like.'" style="text-decoration: none;">'.$icon.'</a></i><span><a href="article.php?id='.$postid.'&likes" style="color: #000000; text-decoration: none;">'.article::countLikes($mysqli, $postid).'</a>
-                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.article::getReactionCount($mysqli, $postid).'</span></span>
-                            <i style="float: right;">Geplaats op: '.$row["posted_on"].'</i>
-                        </div>
-
-
-                        ';
-                }
-            }
         }
     }
     static function loadArticle($mysqli, $id) {
@@ -2198,23 +2123,22 @@ class article {
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
         $row = mysqli_fetch_assoc($result);
-        $title = $row['post_title'];
-        $parkname = park::getName($mysqli, $row['park_id']);
-        $logo = park::getLogo($mysqli, $row['park_id']);
-        $body = $row['post_body'];
-        $postimages = $row['post_images'];
+        $parkname = user::getNameByUUID($mysqli, $row['user_id']);
+        $logo = '';
+        $body = $row['post_text'];
+        $postimages = $row['post_image'];
         if(strpos($postimages, 'Invalid URL') !== false) {
             $postimages = park::getHeader($mysqli, $row['park_id']);
         }
-        $url = "https://www.parkcraft.nl/article.php?id=$id";
+        $url = "http://daniquedejong.nl/instawall/article.php?id=$id";
         $icon = '';
-        if(article::isLiking($mysqli, $id, $_SESSION['UUID'])) {
+        if(posts::isLiking($mysqli, $id, $_SESSION['UUID'])) {
             $icon = 'favorite';
         } else {
             $icon = 'favorite_border';
         }
         $like = '';
-        if(article::isLiking($mysqli, $id, $_SESSION['UUID'])) {
+        if(posts::isLiking($mysqli, $id, $_SESSION['UUID'])) {
             $like = 'unlike';
         } else {
             $like = 'like';
@@ -2222,17 +2146,15 @@ class article {
         echo '
             <div>
                 <div>
-                    <img class="avatar" src="'.$logo.'" alt=""/>
-                    <a href="park.php?id='.$row['park_id'].'"><span style="style="color: black; font-weight: bold;">'.$parkname.'</span></a>
+                    <span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                 </div>
                 <div>
                     <img src="'.$postimages.'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
                 </div>
-                <h3>'.$title.'</h3>
                 <span>'.$body.'</span>
                 <hr />
                 <i style="float: right;">Gepost: '.$row["posted_on"].'</i>
-                <span style="float: left;" class="shortcut"><i class="material-icons heart"><a href="?id='.$id.'&'.$like.'" style="text-decoration: none">'.$icon.'</a></i><span><a href="?id='.$id.'&likes" style="color: #000000; text-decoration: none;">'.article::countLikes($mysqli, $id).'</a></span></span><br /><br />
+                <span style="float: left;" class="shortcut"><i class="material-icons heart"><a href="?id='.$id.'&'.$like.'" style="text-decoration: none">'.$icon.'</a></i><span><a href="?id='.$id.'&likes" style="color: #000000; text-decoration: none;">'.posts::countLikes($mysqli, $id).'</a></span></span><br /><br />
                 <ul class="share-buttons">
                   <li><a href="https://www.facebook.com/sharer/sharer.php?u='.$url.'&t='.$title.'" title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="resources/svg/Facebook.svg"></a></li>
                   <li><a href="https://twitter.com/intent/tweet?source='.$url.'&text='.$title.' '.$url.'&via=parkencraft" target="_blank" title="Tweet"><img alt="Tweet" src="resources/svg/Twitter.svg"></a></li>
@@ -2247,25 +2169,6 @@ class article {
         $count = mysqli_num_rows($result);
         while($row = mysqli_fetch_assoc($result)) {
             $rowid = $row['ID'];
-            if(park::IsUserOwner($mysqli, article::getParkID($mysqli, $id), $row['uuid'])) {
-                echo '
-                <span class="label ' . user::getLabel($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '">' . user::getPrefix($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '</span>
-                <span class="label label-primary">Eigenaar</span><span> ' . user::getNameByUUID($mysqli, $row['uuid']) . '</span>
-                <p>' . $row['reaction'] . '</p>';
-                if ($row['uuid'] == $_SESSION['UUID'] || staff::canManageComments($mysqli, $_SESSION['UUID'])) {
-                    echo '<a href="?remove=' . $rowid . '&id=' . $id . '">Verwijder</a>';
-                }
-                echo '<hr />';
-            } else if(park::IsUserStaff($mysqli, article::getParkID($mysqli, $id), $row['uuid'])) {
-                echo '
-                <span class="label ' . user::getLabel($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '">' . user::getPrefix($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '</span>
-                <span class="label label-primary">' . park::getStaffPrefix($mysqli, article::getParkID($mysqli, $id), $row['uuid']) . '</span><span> ' . user::getNameByUUID($mysqli, $row['uuid']) . '</span>
-                <p>' . $row['reaction'] . '</p>';
-                if ($row['uuid'] == $_SESSION['UUID'] || staff::canManageComments($mysqli, $_SESSION['UUID'])) {
-                    echo '<a href="?remove=' . $rowid . '&id=' . $id . '">Verwijder</a>';
-                }
-                echo '<hr />';
-            } else {
                 echo '
                 <span class="label ' . user::getLabel($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '">' . user::getPrefix($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '</span><span> ' . user::getNameByUUID($mysqli, $row['uuid']) . '</span>
                 <p>' . $row['reaction'] . '</p>';
@@ -2273,7 +2176,6 @@ class article {
                     echo '<a href="?remove=' . $rowid . '&id=' . $id . '">Verwijder</a>';
                 }
                 echo '<hr />';
-            }
         }
     }
     static function getReactionCount($mysqli, $id) {
@@ -2435,13 +2337,13 @@ class article {
         }
     }
     static function like($mysqli, $articleid, $uuid) {
-        if(!article::isLiking($mysqli, $articleid, $uuid)) {
+        if(!posts::isLiking($mysqli, $articleid, $uuid)) {
             $sql="UPDATE pco_posts SET post_likes = CONCAT(post_likes,'".$uuid.",') WHERE ID='$articleid';";
             $result=mysqli_query($mysqli, $sql);
         }
     }
     static function unlike($mysqli, $articleid, $uuid) {
-        if(article::isLiking($mysqli, $articleid, $uuid)) {
+        if(posts::isLiking($mysqli, $articleid, $uuid)) {
             $sql = "UPDATE pco_posts SET post_likes = REPLACE(post_likes,'" . $uuid . ",','') WHERE ID='$articleid';";
             $result = mysqli_query($mysqli, $sql);
         }
@@ -3246,7 +3148,7 @@ class common {
     }
     static function uploadimage($img) {
         $filename = $img['tmp_name'];
-        $client_id="c8a5d9459a7fca3";
+        $client_id="59dff13b54c75eb";
         $handle = fopen($filename, "r");
         $data = fread($handle, filesize($filename));
         $pvars   = array('image' => base64_encode($data));
