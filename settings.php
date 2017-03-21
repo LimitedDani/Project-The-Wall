@@ -67,10 +67,7 @@ system::copyRightSign();?>
                 <div class="col-md-9">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <?php if(isset($_GET['followed'])) {
-                                ?><h3 class="panel-title">Parken die je volgt</h3><?
-                                $title = 'Parken die je volgt';
-                            } else if(isset($_GET['password'])) {
+                            <?php if(isset($_GET['password'])) {
                                 ?><h3 class="panel-title">Wachtwoord veranderen</h3><?php
                             } else {
                                 ?><h3 class="panel-title">Algemene instellingen</h3><?php
@@ -80,9 +77,7 @@ system::copyRightSign();?>
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="col-md-12">
-                                        <?php if(isset($_GET['followed'])) {
-                                            user::loadFollowedParks($mysqli, $_SESSION['UUID']);
-                                        } else if(isset($_GET['password'])) {?>
+                                        <?php if(isset($_GET['password'])) {?>
                                         <form name="settings" id="settings"
                                               action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>"
                                               enctype="multipart/form-data" method="post" autocomplete="off"
@@ -136,7 +131,6 @@ system::copyRightSign();?>
                     <h4 class="text-danger">Snelkoppelingen</h4>
                     <p><a href="?" class="shortcut"><i class="material-icons">settings</i><span>Algemene instellingen</span></a></p>
                     <p><a href="?password" class="shortcut"><i class="material-icons">keyboard</i><span>Wachtwoord</span></a></p>
-                    <p><a href="?followed" class="shortcut"><i class="material-icons">keyboard_arrow_right</i><span>Volgend</span></a></p>
                     <?php ads::skycraper();?>
                 </div>
             </div>

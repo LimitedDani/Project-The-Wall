@@ -11,41 +11,6 @@ if(!staff::canUseStaffPanel($mysqli, $_SESSION['UUID'])) {
     header("Location: home.php");
     exit;
 }
-if(isset($_GET['removeapplication'])) {
-    if(!staff::canManageApplications($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    $id = $_GET['removeapplication'];
-    $page = $_GET['pi'];
-    vacature::removeApplication($mysqli, $id);
-    header("Location: staff.php?applications=&id=$page&info=Sollicitatie verwijderd!");
-    exit;
-}
-if(isset($_GET['removevacature'])) {
-    if(!staff::canManageApplications($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    $jobid = $_GET['removevacature'];
-    $parkid = $_GET['parkid'];
-    $page = $_GET['pi'];
-    vacature::removeVacature($mysqli, $parkid, $jobid);
-    header("Location: staff.php?applications=&page=$page&info=Vacature verwijderd!");
-    exit;
-}
-if(isset($_GET['undoremovevacature'])) {
-    if(!staff::canManageApplications($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    $jobid = $_GET['undoremovevacature'];
-    $parkid = $_GET['parkid'];
-    $page = $_GET['pi'];
-    vacature::unremoveVacature($mysqli, $parkid, $jobid);
-    header("Location: staff.php?applications=&page=$page&info=Verwijderen ongedaan gemaakt!");
-    exit;
-}
 if(isset($_POST['mailbutton'])) {
     if(!staff::canSendMail($mysqli, $_SESSION['UUID'])) {
         header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
@@ -55,24 +20,6 @@ if(isset($_POST['mailbutton'])) {
     $body = preg_replace("/\r\n|\r/", "<br />", $_POST["mail"]);
     user::sendEmailToEveryone($mysqli, $subject, $body);
     header("Location: staff.php?mail&info=Email verstuurd");
-    exit;
-}
-if(isset($_GET['parkrequest']) && isset($_GET['refuse']) && !empty($_GET['refuse'])) {
-    if(!staff::canManageParkRequests($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    park::refuserequest($mysqli, $_GET['refuse']);
-    header("Location: staff.php?parkrequest=&info=Park met succes geweigerd!");
-    exit;
-}
-if(isset($_GET['parkrequest']) && isset($_GET['accept']) && !empty($_GET['accept'])) {
-    if(!staff::canManageParkRequests($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    park::acceptrequest($mysqli, $_GET['accept']);
-    header("Location: staff.php?parkrequest=&info=Park met succes geaccepteerd!");
     exit;
 }
 if(isset($_POST['edituserbutton'])) {
@@ -91,22 +38,6 @@ if(isset($_POST['edituserbutton'])) {
     header("Location: staff.php?users=&page=$pageid&info=Gebruiker aangepast");
     exit;
 }
-if(isset($_GET['undoremove']) || isset($_GET['remove'])) {
-    if(!staff::canManageParks($mysqli, $_SESSION['UUID'])) {
-        header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
-        exit;
-    }
-    $uuid = $_GET['parks'];
-    if(isset($_GET['undoremove'])) {
-        park::delete($mysqli, $uuid, 0);
-    }
-    if(isset($_GET['remove'])) {
-        park::delete($mysqli, $uuid, 1);
-    }
-    $pageid = $_GET['pi'];
-    header("Location: staff.php?parks=&page=$pageid&info=Park aangepast");
-    exit;
-}
 if(isset($_GET['removepost']) || isset($_GET['undoremovepost'])) {
     if(!staff::canManagePosts($mysqli, $_SESSION['UUID'])) {
         header("Location: staff.php?home=&warning=Geen toegang tot dit gedeelte.");
@@ -114,10 +45,10 @@ if(isset($_GET['removepost']) || isset($_GET['undoremovepost'])) {
     }
     $post = $_GET['posts'];
     if(isset($_GET['undoremovepost'])) {
-        article::undeletepoststaff($mysqli, $post, $_SESSION['UUID']);
+        posts::undeletepoststaff($mysqli, $post, $_SESSION['UUID']);
     }
     if(isset($_GET['removepost'])) {
-        article::deletepoststaff($mysqli, $post, $_SESSION['UUID']);
+        posts::deletepoststaff($mysqli, $post, $_SESSION['UUID']);
     }
     $pageid = $_GET['pi'];
     header("Location: staff.php?posts=&page=$pageid&info=Artikel aangepast");
@@ -125,8 +56,7 @@ if(isset($_GET['removepost']) || isset($_GET['undoremovepost'])) {
 }
 if(isset($_GET['removereaction'])) {
     $id = $_GET['id'];
-    article::RemoveReaction($mysqli, $id);
-
+    posts::RemoveReaction($mysqli, $id);
     $pageid = $_GET['pi'];
     header("Location: staff.php?reactions=&page=$pageid&info=Reactie verwijderd");
     exit;
@@ -195,9 +125,7 @@ if(isset($_GET['keywords'])) {
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <?php if(isset($_GET['parkrequest']) && staff::canManageParkRequests($mysqli, $_SESSION['UUID'])) {
-                                        park::loadrequests($mysqli);
-                                    } else if(isset($_GET['users']) && staff::canManageUsers($mysqli, $_SESSION['UUID'])) {
+                                    <?php if(isset($_GET['users']) && staff::canManageUsers($mysqli, $_SESSION['UUID'])) {
                                         if(!isset($_GET['id'])) {
                                             ?>
                                             <form action="staff.php" method="get">
@@ -224,50 +152,18 @@ if(isset($_GET['keywords'])) {
                                                 user::loadAllUsers($mysqli, $pageid);
                                             }
                                         }
-                                    } else if(isset($_GET['parks']) && staff::canManageParks($mysqli, $_SESSION['UUID'])) {
-                                        ?>
-                                        <form action="staff.php" method="get">
-                                            <div class="form-group">
-                                                <input type="hidden" class="form-control col-md-8" name="parks">
-                                                <div style="display:inline-block;">
-                                                    <input type="text" class="form-control" name="keywords"
-                                                           placeholder="Zoeken" value="<?php echo $keywords;?>">
-                                                </div>
-                                                <div style="display:inline-block;">
-                                                    <a href="staff.php?parks=&page=1" class="btn-sm btn-danger">Reset</a>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <?php
-                                        if(isset($_GET['keywords'])) {
-                                            park::LoadParksSearch($mysqli, $pageid, $_GET['keywords']);
-                                        } else if(isset($_GET['page'])) {
-                                            if($_GET['page'] != 0) {
-                                                $pageid = $_GET['page'] - 1;
-                                                park::LoadParks($mysqli, $pageid);
-                                            }
-                                        }
-                                    } else if(isset($_GET['applications']) && staff::canManageApplications($mysqli, $_SESSION['UUID'])) {
-                                        if(isset($_GET['page'])) {
-                                            if($_GET['page'] != 0) {
-                                                $pageid = $_GET['page'] - 1;
-                                                vacature::loadVacaturesStaff($mysqli, $pageid);
-                                            }
-                                        } else if(isset($_GET['id'])) {
-                                            vacature::loadApplicationsStaff($mysqli, $_GET['id']);
-                                        }
                                     } else if(isset($_GET['reactions']) && staff::canManageComments($mysqli, $_SESSION['UUID'])) {
                                         if(isset($_GET['page'])) {
                                             if($_GET['page'] != 0) {
                                                 $pageid = $_GET['page'] - 1;
-                                                article::loadAllReactions($mysqli, $pageid);
+                                                posts::loadAllReactions($mysqli, $pageid);
                                             }
                                         }
                                     } else if(isset($_GET['posts']) && staff::canManagePosts($mysqli, $_SESSION['UUID'])) {
                                         if(isset($_GET['page'])) {
                                             if($_GET['page'] != 0) {
                                                 $pageid = $_GET['page'] - 1;
-                                                article::loadAllPosts($mysqli, $pageid);
+                                                posts::loadAllPosts($mysqli, $pageid);
                                             }
                                         }
                                     } else if(isset($_GET['mail'])) {
@@ -365,122 +261,7 @@ if(isset($_GET['keywords'])) {
                                                 }
                                             </script>
                                             <hr />
-                                            <h3>Geweigerde parkaanvragen</h3>
-                                            <?php
-                                                $countpr = statistics::parkRequestsRejected($mysqli);
-                                            ?>
-                                            <span class="countpr"><?php echo $countpr;?></span>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-danger countprl" style="width: 0%"></div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $('.countpr').each(function () {
-                                                    $(this).prop('Counter',0).animate({
-                                                        Counter: $(this).text()
-                                                    }, {
-                                                        duration: 4000,
-                                                        easing: 'swing',
-                                                        step: function (now) {
-                                                            $(this).text(Math.ceil(now));
-                                                            $('.countprl').css('width', ((100 / <?php echo $countpr;?>) * Math.ceil(now)) + '%');
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                            <hr />
-                                            <h3>Aantal parken</h3>
-                                            <?php
-                                            $countp = statistics::parks($mysqli);
-                                            ?>
-                                            <span class="countp"><?php echo $countp;?></span>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-info countpl" style="width: 0%"></div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $('.countp').each(function () {
-                                                    $(this).prop('Counter',0).animate({
-                                                        Counter: $(this).text()
-                                                    }, {
-                                                        duration: 4000,
-                                                        easing: 'swing',
-                                                        step: function (now) {
-                                                            $(this).text(Math.ceil(now));
-                                                            $('.countpl').css('width', ((100 / <?php echo $countp;?>) * Math.ceil(now)) + '%');
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                            <hr />
-                                            <h3>Aantal park evenementen</h3>
-                                            <?php
-                                            $countpe = statistics::parkEvents($mysqli);
-                                            ?>
-                                            <span class="countpe"><?php echo $countpe;?></span>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-warning countpel" style="width: 0%"></div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $('.countpe').each(function () {
-                                                    $(this).prop('Counter',0).animate({
-                                                        Counter: $(this).text()
-                                                    }, {
-                                                        duration: 4000,
-                                                        easing: 'swing',
-                                                        step: function (now) {
-                                                            $(this).text(Math.ceil(now));
-                                                            $('.countpel').css('width', ((100 / <?php echo $countpe;?>) * Math.ceil(now)) + '%');
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                            <hr />
-                                            <h3>Aantal park attracties</h3>
-                                            <?php
-                                            $countpr = statistics::parkRides($mysqli);
-                                            ?>
-                                            <span class="countpa"><?php echo $countpr;?></span>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-primary countpal" style="width: 0%"></div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $('.countpa').each(function () {
-                                                    $(this).prop('Counter',0).animate({
-                                                        Counter: $(this).text()
-                                                    }, {
-                                                        duration: 4000,
-                                                        easing: 'swing',
-                                                        step: function (now) {
-                                                            $(this).text(Math.ceil(now));
-                                                            $('.countpal').css('width', ((100 / <?php echo $countpr;?>) * Math.ceil(now)) + '%');
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                            <hr />
-                                            <h3>Aantal park stafleden</h3>
-                                            <?php
-                                            $countps = statistics::parkStaff($mysqli);
-                                            ?>
-                                            <span class="countps"><?php echo $countps;?></span>
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar-warning countpsl" style="width: 0%"></div>
-                                            </div>
-                                            <script type="text/javascript">
-                                                $('.countps').each(function () {
-                                                    $(this).prop('Counter',0).animate({
-                                                        Counter: $(this).text()
-                                                    }, {
-                                                        duration: 4000,
-                                                        easing: 'swing',
-                                                        step: function (now) {
-                                                            $(this).text(Math.ceil(now));
-                                                            $('.countpsl').css('width', ((100 / <?php echo $countps;?>) * Math.ceil(now)) + '%');
-                                                        }
-                                                    });
-                                                });
-                                            </script>
-                                            <hr />
-                                            <h3>Aantal artikelen</h3>
+                                            <h3>Aantal posts</h3>
                                             <?php
                                             $countpost = statistics::posts($mysqli);
                                             ?>
@@ -503,7 +284,7 @@ if(isset($_GET['keywords'])) {
                                                 });
                                             </script>
                                             <hr />
-                                            <h3>Aantal reacties op artikelen</h3>
+                                            <h3>Aantal reacties op posts</h3>
                                             <?php
                                             $countcomments = statistics::reactions($mysqli);
                                             ?>
@@ -594,20 +375,11 @@ if(isset($_GET['keywords'])) {
                 <div class="col-md-3 right-container well">
                     <h4 class="text-danger">Snelkoppelingen</h4>
                     <p><a href="?home" class="shortcut"><i class="material-icons">home</i><span>Home</span></a></p>
-                    <?php if(staff::canManageParkRequests($mysqli, $_SESSION['UUID'])) {?>
-                        <p><a href="?parkrequest" class="shortcut"><i class="material-icons">group_add</i><span>Park aanvragen beheren</span></a></p>
-                    <?php }
-                    if(staff::canManageUsers($mysqli, $_SESSION['UUID'])) {?>
+                    <?php if(staff::canManageUsers($mysqli, $_SESSION['UUID'])) {?>
                         <p><a href="?users=&page=1" class="shortcut"><i class="material-icons">accessibility</i><span>Gebruikers beheren</span></a></p>
                     <?php }
                     if(staff::canManagePosts($mysqli, $_SESSION['UUID'])) {?>
                         <p><a href="?posts=&page=1" class="shortcut"><i class="material-icons">assignment</i><span>Artikelen Beheren</span></a></p>
-                    <?php }
-                    if(staff::canManageParks($mysqli, $_SESSION['UUID'])) {?>
-                        <p><a href="?parks=&page=1" class="shortcut"><i class="material-icons">account_balance</i><span>Parken beheren</span></a></p>
-                    <?php }
-                    if(staff::canManageApplications($mysqli, $_SESSION['UUID'])) {?>
-                        <p><a href="?applications=&page=1" class="shortcut"><i class="material-icons">local_offer</i><span>Vacatures beheren</span></a></p>
                     <?php }
                     if(staff::canManageComments($mysqli, $_SESSION['UUID'])) {?>
                         <p><a href="?reactions=&page=1" class="shortcut"><i class="material-icons">textsms</i><span>Reacties beheren</span></a></p>

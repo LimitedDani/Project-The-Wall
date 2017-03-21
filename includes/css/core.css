@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Daníque de Jong
  */
 body {
-    background: url(/resources/background.png);
+    background: url(http://daniquedejong.nl/instawall/resources/kutmuur.png);
     transition: background 0.5s linear;
     background-position: center;
     background-size: 100% 100%;

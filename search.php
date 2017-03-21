@@ -52,16 +52,6 @@ $keywords = $_GET['keywords'];
                             <div class="row">
                                 <div class="col-md-12">
                                     <div>
-                                        <p>Parken die overeenkomen</p>
-                                        <?php echo search::loadParks($mysqli, $keywords);?>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div>
                                         <?php search::loadArticles($mysqli, $keywords);?>
                                     </div>
                                 </div>
@@ -71,8 +61,6 @@ $keywords = $_GET['keywords'];
                 </div>
 
                 <div class="col-md-3 right-container well">
-                    <h4 class="text-danger">Wie te volgen</h4>
-                    <?php park::loadWhoToFollow($mysqli,$_SESSION['UUID']);?>
                     <?php ads::skycraper();?>
                 </div>
             </div>

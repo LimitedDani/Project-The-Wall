@@ -24,6 +24,8 @@ if(isset($_REQUEST['danger'])) {
 <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 <link href="includes/css/core.css" rel="stylesheet">
 <link href="includes/css/animate.min.css" rel="stylesheet">
+<link href="includes/css/customnav.css" rel="stylesheet">
+
 <!-- Bootstrap Material Design -->
 <link href="assets/material/css/bootstrap-material-design.min.css" rel="stylesheet">
 <link href="assets/material/css/ripples.min.css" rel="stylesheet">
@@ -32,7 +34,4 @@ if(isset($_REQUEST['danger'])) {
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="assets/material/js/material.js"></script>
 <!-- Favivon -->
-<link rel="icon" type="image/png" href="/resources/favicon.png" sizes="16x16">
-<link rel="icon" type="image/png" href="/resources/favicon.png" sizes="32x32">
-<link rel="icon" type="image/x-icon" href="/resources/favicon.ico" >
-<link rel="shortcut icon" type="image/x-icon" href="/resources/favicon.ico"/>
+<link rel="icon" type="image/png" href="resources/icon.png" sizes="16x16">

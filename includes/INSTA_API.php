@@ -140,6 +140,39 @@ class user {
         }
         return false;
     }
+    static function excistID($mysqli, $id) {
+        $sql="SELECT * FROM pco_users WHERE ID='$id'";
+        $result = mysqli_query($mysqli, $sql);
+        $count = mysqli_num_rows($result);
+        if($count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+        return false;
+    }
+    static function excistUUID($mysqli, $UUID) {
+        $sql="SELECT * FROM pco_users WHERE UUID='$UUID'";
+        $result = mysqli_query($mysqli, $sql);
+        $count = mysqli_num_rows($result);
+        if($count > 0) {
+            return true;
+        } else {
+            return false;
+        }
+        return false;
+    }
+    static function getIDFromUUID($mysqli, $uuid) {
+        $sql="SELECT * FROM pco_users WHERE UUID='$uuid'";
+        $result = mysqli_query($mysqli, $sql);
+        $count = mysqli_num_rows($result);
+        $row = mysqli_fetch_assoc($result);
+        if($count > 0) {
+            return $row['ID'];
+        }
+        return '0';
+    }
+
     static function update($mysqli, $name, $email, $rank, $access, $activated, $uuid) {
         $name = strip_tags($name);
         $email = strip_tags($email);
@@ -166,6 +199,16 @@ class user {
     }
     static function getUUIDFromEmail($mysqli, $email) {
         $sql="SELECT * FROM pco_users WHERE email='$email'";
+        $result = mysqli_query($mysqli, $sql);
+        $count = mysqli_num_rows($result);
+        $row = mysqli_fetch_assoc($result);
+        if($count > 0) {
+            return $row['UUID'];
+        }
+        return '0';
+    }
+    static function getUUIDFromID($mysqli, $id) {
+        $sql="SELECT * FROM pco_users WHERE ID='$id'";
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
         $row = mysqli_fetch_assoc($result);
@@ -1948,13 +1991,6 @@ class posts {
         $result = mysqli_query($mysqli, $sql);
     }
 
-    static function getParkID($mysqli, $id) {
-        $sql = "SELECT * FROM pco_posts WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        return $row['park_id'];
-    }
     static function isDeleted($mysqli, $postid) {
         $sql = "SELECT * FROM pco_posts WHERE ID='$postid' AND deleted='1'";
         $result = mysqli_query($mysqli, $sql);
@@ -2009,31 +2045,30 @@ class posts {
             }
         }
     }
-    static function loadArticlesPark($mysqli, $parkid) {
-        $sql = "SELECT * FROM pco_posts WHERE park_id='$parkid' AND deleted='0' order by ID desc";
+    static function loadArticlesUser($mysqli, $userid) {
+        $useruuid = user::getUUIDFromID($mysqli, $userid);
+        $sql = "SELECT * FROM pco_posts WHERE user_id='$useruuid' AND deleted='0' order by ID desc";
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
         if($count == 0) {
-            echo '<p>Dit park heeft nog geen artikelen gepost.</p>';
+            echo '<p>Deze persoon heeft nog geen artikelen gepost.</p>';
         }
-        while($row = mysqli_fetch_assoc($result)) {
-            $title = $row['post_title'];
+        while ($row = mysqli_fetch_assoc($result)) {
+            $title = $row['post_text'];
             $postid = $row['ID'];
-            $parkname = park::getName($mysqli, $row['park_id']);
-            $logo = park::getLogo($mysqli, $row['park_id']);
+            $parkname = user::getNameByUUID($mysqli, $row['user_id']);
+            $logo = '';
             $post = common::random(20);
-            $postheader = $row['post_header'];
-            if(strpos($postheader, 'Invalid URL') !== false) {
-                $postheader = park::getHeader($mysqli, $parkid);
-            }
+            $postheader = $row['post_image'];
+
             $icon = '';
-            if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
                 $icon = 'favorite';
             } else {
                 $icon = 'favorite_border';
             }
             $like = '';
-            if(article::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
                 $like = 'unlike';
             } else {
                 $like = 'like';
@@ -2041,8 +2076,7 @@ class posts {
             echo '
                         <div class="jumbotron hover" id="' . $post . '">
                             <div>
-                                <img class="avatar" src="' . $logo . '" alt=""/>
-                                <a href="park.php?id=' . $row['park_id'] . '" style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                                <a href="profile.php?id='.user::getIDFromUUID($mysqli, $useruuid).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                             </div>
                             <div>
                                 <div>
@@ -2054,12 +2088,12 @@ class posts {
                                 var id' . $post . ' = document.getElementById("' . $post . '");
 
                                 id' . $post . '.onclick = function() {
-                                    window.location.href = "article.php?id=' . $postid . '";
+                                    window.location.href = "post.php?id=' . $postid . '";
                                 };
                             </script>
-                            <span class="shortcut"><i class="material-icons heart"><a href="article.php?id='.$postid.'&'.$like.'" style="text-decoration: none;">'.$icon.'</a></i><span><a href="article.php?id='.$postid.'&likes" style="color: #000000; text-decoration: none;">'.article::countLikes($mysqli, $postid).'</a>
-                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.article::getReactionCount($mysqli, $postid).'</span></span>
-                            <i style="float: right;">Geplaats op: '.$row["posted_on"].'</i>
+                            <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i><span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
+                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.posts::getReactionCount($mysqli, $postid).'</span></span>
+                            <i style="float: right;">Geplaatst op: ' . $row["posted_on"] . '</i>
                         </div>
 
 
@@ -2094,7 +2128,7 @@ class posts {
             echo '
                         <div class="jumbotron hover" id="' . $post . '">
                             <div>
-                                <span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                                <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                             </div>
                             <div>
                                 <div>
@@ -2111,7 +2145,7 @@ class posts {
                             </script>
                             <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i><span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
                             <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.posts::getReactionCount($mysqli, $postid).'</span></span>
-                            <i style="float: right;">Geplaats op: ' . $row["posted_on"] . '</i>
+                            <i style="float: right;">Geplaatst op: ' . $row["posted_on"] . '</i>
                         </div>
 
 
@@ -2126,11 +2160,8 @@ class posts {
         $parkname = user::getNameByUUID($mysqli, $row['user_id']);
         $logo = '';
         $body = $row['post_text'];
-        $postimages = $row['post_image'];
-        if(strpos($postimages, 'Invalid URL') !== false) {
-            $postimages = park::getHeader($mysqli, $row['park_id']);
-        }
-        $url = "http://daniquedejong.nl/instawall/article.php?id=$id";
+        $postheader = $row['post_image'];
+        $url = "http://daniquedejong.nl/instawall/post.php?id=$id";
         $icon = '';
         if(posts::isLiking($mysqli, $id, $_SESSION['UUID'])) {
             $icon = 'favorite';
@@ -2146,19 +2177,19 @@ class posts {
         echo '
             <div>
                 <div>
-                    <span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                    <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                 </div>
                 <div>
-                    <img src="'.$postimages.'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
+                    <img src="'.$postheader.'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
                 </div>
                 <span>'.$body.'</span>
                 <hr />
-                <i style="float: right;">Gepost: '.$row["posted_on"].'</i>
+                <i style="float: right;">Geplaatst opx: '.$row["posted_on"].'</i>
                 <span style="float: left;" class="shortcut"><i class="material-icons heart"><a href="?id='.$id.'&'.$like.'" style="text-decoration: none">'.$icon.'</a></i><span><a href="?id='.$id.'&likes" style="color: #000000; text-decoration: none;">'.posts::countLikes($mysqli, $id).'</a></span></span><br /><br />
                 <ul class="share-buttons">
-                  <li><a href="https://www.facebook.com/sharer/sharer.php?u='.$url.'&t='.$title.'" title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="resources/svg/Facebook.svg"></a></li>
-                  <li><a href="https://twitter.com/intent/tweet?source='.$url.'&text='.$title.' '.$url.'&via=parkencraft" target="_blank" title="Tweet"><img alt="Tweet" src="resources/svg/Twitter.svg"></a></li>
-                  <li><a href="http://www.reddit.com/submit?url='.$url.'&title='.$title.'" target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="resources/svg/Reddit.svg"></a></li>
+                  <li><a href="https://www.facebook.com/sharer/sharer.php?u='.$url.'&t='.$body.'" title="Share on Facebook" target="_blank"><img alt="Share on Facebook" src="resources/svg/Facebook.svg"></a></li>
+                  <li><a href="https://twitter.com/intent/tweet?source='.$url.'&text='.$body.' '.$url.'&via=Limited_Dani" target="_blank" title="Tweet"><img alt="Tweet" src="resources/svg/Twitter.svg"></a></li>
+                  <li><a href="http://www.reddit.com/submit?url='.$url.'&title='.$body.'" target="_blank" title="Submit to Reddit"><img alt="Submit to Reddit" src="resources/svg/Reddit.svg"></a></li>
                 </ul>
             </div>
         ';
@@ -2170,7 +2201,7 @@ class posts {
         while($row = mysqli_fetch_assoc($result)) {
             $rowid = $row['ID'];
                 echo '
-                <span class="label ' . user::getLabel($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '">' . user::getPrefix($mysqli, user::getRankByUUID($mysqli, $row['uuid'])) . '</span><span> ' . user::getNameByUUID($mysqli, $row['uuid']) . '</span>
+                <strong><span> ' . user::getNameByUUID($mysqli, $row['uuid']) . '</span></strong>
                 <p>' . $row['reaction'] . '</p>';
                 if ($row['uuid'] == $_SESSION['UUID'] || staff::canManageComments($mysqli, $_SESSION['UUID'])) {
                     echo '<a href="?remove=' . $rowid . '&id=' . $id . '">Verwijder</a>';
@@ -2226,7 +2257,7 @@ class posts {
         $count = mysqli_num_rows($result);
         $row = mysqli_fetch_assoc($result);
         if($count > 0) {
-            return $row['post_title'];
+            return $row['post_text'];
         } else {
             return 'Artikel verwijderd';
         }
@@ -2254,7 +2285,7 @@ class posts {
                 $reactie = $row['reaction'];
                 echo '<tr>';
                 echo '<td>'.$name.'</td>';
-                echo '<td><a href="article.php?id=' . $artikel . '">'.article::getTitle($mysqli, $row["article_id"]).'</a></td>';
+                echo '<td><a href="article.php?id=' . $artikel . '">'.posts::getTitle($mysqli, $row["article_id"]).'</a></td>';
                 echo '<td><p style="word-wrap: break-word;">'.$reactie.'</p></td>';
                 echo '<td><a href="staff.php?reactions=&id=' . $row['ID'] . '&pi=' . ($pageid + 1) . '&removereaction=" class="btn btn-danger btn-sm">Verwijder</a></td>';
                 echo '</tr>';
@@ -2291,8 +2322,8 @@ class posts {
                 <table class="table table-hover">
                     <thead>
                         <tr>
+                            <th>Gebruiker</th>
                             <th>Artikel</th>
-                            <th>Park</th>
                             <th>Reacties</th>
                             <th>Opties</th>
                         </tr>
@@ -2300,13 +2331,13 @@ class posts {
             echo '<tbody>';
             while ($row = mysqli_fetch_assoc($result)) {
                 $id = $row['ID'];
-                $parkid = $row['park_id'];
-                $title = $row['post_title'];
+                $title = $row['post_text'];
+                $user = user::getNameByUUID($mysqli, $row['user_id']);
                 $deleted = $row['deleted'];
                 echo '<tr>';
-                echo '<td><a href="article.php?id=' . $id . '">'.$title.'</a></td>';
-                echo '<td><a href="park.php?id='.$parkid.'">'.park::getName($mysqli, $parkid).'</a></td>';
-                echo '<td><p style="word-wrap: break-word;">'.article::getReactionCount($mysqli, $id).'</p></td>';
+                echo '<td><p>'.$user.'</p></td>';
+                echo '<td><a href="post.php?id=' . $id . '">'.$title.'</a></td>';
+                echo '<td><p style="word-wrap: break-word;">'.posts::getReactionCount($mysqli, $id).'</p></td>';
                 if($deleted == 2 || $deleted == 1) {
                     echo '<td><a href="staff.php?posts=' . $id . '&undoremovepost=&pi='.($pageid + 1).'" class="btn btn-info btn-sm">Verwijderen ongedaan maken</a></td>';
                 } else {
@@ -2386,756 +2417,6 @@ class posts {
         }
     }
 }
-class park {
-    static function getUUIDFromStaff($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks_staff WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['uuid'];
-        }
-    }
-    static function removestaff($mysqli, $parkid, $id) {
-        $sql = "DELETE FROM pco_parks_staff WHERE ID='$id' AND park_id='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-    }
-    static function addstaff($mysqli, $parkid, $email) {
-        $email = strip_tags($email);
-        if(!user::exist($mysqli, $email)) {
-            return false;
-            exit;
-        }
-        if(park::IsUserStaff($mysqli, $parkid, user::getUUIDFromEmail($mysqli, $email)) || park::IsUserOwner($mysqli, $parkid, user::getUUIDFromEmail($mysqli, $email))) {
-            return true;
-        }
-        $useremail = user::getUUIDFromEmail($mysqli,$email);
-        $sql = "INSERT INTO pco_parks_staff (park_id, uuid) VALUES ('$parkid', '$useremail');";
-        $result = mysqli_query($mysqli, $sql);
-        return false;
-    }
-    static function editstaff($mysqli, $parkid, $useruuid, $cw, $ces, $cms, $cmr, $cmj, $prefix) {
-        $prefix = strip_tags($prefix);
-        $sql = "UPDATE pco_parks_staff SET prefix='$prefix', can_write='$cw', can_edit_settings='$ces', can_manage_staff='$cms', can_manage_rides='$cmr', can_manage_jobs='$cmj' WHERE uuid='$useruuid' AND park_id='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-    }
-    static function getStaffPrefix($mysqli, $parkid, $uuid) {
-        $sql="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$uuid'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        return $row['prefix'];
-    }
-    static function loadstaff($mysqli, $parkid) {
-        $sql="SELECT * FROM pco_parks_staff WHERE park_id='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if($count > 0) {
-            echo '
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Naam</th>
-                            <th>Prefix</th>
-                            <th>Opties</th>
-                        </tr>
-                    </thead>';
-            echo '<tbody>';
-            while($row = mysqli_fetch_assoc($result)) {
-                echo '<tr>';
-                echo '<td>'.user::getNameByUUID($mysqli, $row["uuid"]).'</td>';
-                echo '<td>'.$row["prefix"].'</td>';
-                echo '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#'.$row["ID"].'">Edit</button><a href="parksettings.php?id='.$parkid.'&removestaff='.$row["ID"].'&editstaff" class="btn btn-danger btn-sm">Verwijderen</a></td>';
-                echo '
-                        <div id="'.$row["ID"].'" class="modal fade" role="dialog">
-                          <div class="modal-dialog">
-
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Staflid wijzigen</h4>
-                              </div>
-                              <div class="modal-body">
-                                <form name="edit" id="register" action="'.htmlspecialchars($_SERVER['PHP_SELF']).'" method="post" autocomplete="off" class="form-horizontal">
-                                    <p>'.user::getNameByUUID($mysqli, $row["uuid"]).'</p>
-                                    <span>Mag deze persoon artikelen schrijven?</span>
-                                    <select name="cw" class="form-control">
-                                      <option value="1" '; if($row["can_write"] == 1) { echo "selected"; } echo '>Ja</option>
-                                      <option value="0" '; if($row["can_write"] == 0) { echo "selected"; } echo '>Nee</option>
-                                    </select><br />
-                                    <span>Mag deze persoon instellingen veranderen?</span>
-                                    <select name="ces" class="form-control">
-                                      <option value="1" '; if($row["can_edit_settings"] == 1) { echo "selected"; } echo '>Ja</option>
-                                      <option value="0" '; if($row["can_edit_settings"] == 0) { echo "selected"; } echo '>Nee</option>
-                                    </select><br />
-                                    <span>Mag deze persoon staf beheren?</span>
-                                    <select name="cms" class="form-control">
-                                      <option value="1" '; if($row["can_manage_staff"] == 1) { echo "selected"; } echo '>Ja</option>
-                                      <option value="0" '; if($row["can_manage_staff"] == 0) { echo "selected"; } echo '>Nee</option>
-                                    </select><br />
-                                    <span>Mag deze persoon attracties beheren?</span>
-                                    <select name="cmr" class="form-control">
-                                      <option value="1" '; if($row["can_manage_rides"] == 1) { echo "selected"; } echo '>Ja</option>
-                                      <option value="0" '; if($row["can_manage_rides"] == 0) { echo "selected"; } echo '>Nee</option>
-                                    </select><br />
-                                    <span>Mag deze persoon vacatures beheren?</span>
-                                    <select name="cmj" class="form-control">
-                                      <option value="1" '; if($row["can_manage_jobs"] == 1) { echo "selected"; } echo '>Ja</option>
-                                      <option value="0" '; if($row["can_manage_jobs"] == 0) { echo "selected"; } echo '>Nee</option>
-                                    </select><br />
-                                    <input type="hidden" value="'.$parkid.'" name="id"/>
-                                    <input type="hidden" value="'.$row["uuid"].'" name="useruuid"/>
-                                    <br />
-                                    <span>Welke rank heeft deze persoon?</span><input type="text" name="prefix" value="'.$row["prefix"].'" class="form-control" maxlength="20"/><br />
-                                    <button type="submit" class="btn btn-raised btn-success" name="edit" id="postbutton">Opslaan
-                                                </button>
-                                </form>
-                              </div>
-                            </div>
-
-                          </div>
-                        </div>
-                        ';
-                echo '</tr>';
-            }
-            echo '</tbody>';
-            echo '</table>';
-        } else {
-            echo '<p>Er zijn momenteel geen staffleden</p>';
-        }
-        echo '
-                      <button type="button" class="btn-info" data-toggle="modal" data-target="#addstaff">Stafflid toevoegen</button>
-                       <div id="addstaff" class="modal fade" role="dialog">
-                          <div class="modal-dialog">
-
-                            <!-- Modal content-->
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                <h4 class="modal-title">Stafflid toevoegen</h4>
-                              </div>
-                              <div class="modal-body">
-                                <form name="edit" id="addstaff" action="'.htmlspecialchars($_SERVER['PHP_SELF']).'" method="post" autocomplete="off" class="form-horizontal">
-                                    <span>Wat is het email van deze persoon?<br /> <span class="text-danger">(Let op: deze persoon moet geregistreerd zijn op ParkCraft!)</span></span><input type="email" name="email" value=""  class="form-control"/><br />
-                                    <input type="hidden" value="'.$parkid.'" name="id"/>
-                                    <button type="submit" class="btn btn-raised btn-success" name="addstaff" id="postbutton">Toevoegen
-                                  </button>
-                                </form>
-                              </div>
-                            </div>
-
-                          </div>
-                        </div>
-                ';
-    }
-    static function loadarticles($mysqli, $parkid) {
-        $sql="SELECT * FROM pco_posts WHERE park_id='$parkid' AND deleted <> 2";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if($count > 0) {
-            echo '
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Gepost door</th>
-                        <th>Gepost op</th>
-                        <th>Opties</th>
-                    </tr>
-                </thead>';
-            echo '<tbody>';
-            while($row = mysqli_fetch_assoc($result)) {
-                $deleted = $row['deleted'];
-                echo '<tr>';
-                echo '<td>'.$row["post_title"].'</td>';
-                echo '<td>'.user::getNameByUUID($mysqli, $row["post_poster"]).'</td>';
-                echo '<td>'.$row["posted_on"].'</td>';
-                echo '<td><button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#'.$row["ID"].'">Edit</button>';
-                if($deleted == 0) {
-                    echo '<a href="parksettings.php?id='.$parkid.'&removearticle='.$row["ID"].'&postedit" class="btn btn-danger btn-sm">Verwijderen</a></td>';
-                } else {
-                    echo '<a href="parksettings.php?id='.$parkid.'&undoremovearticle='.$row["ID"].'&postedit" class="btn btn-danger btn-sm">Verwijderen ongedaan maken</a></td>';
-                }
-                echo '
-                    <div id="'.$row["ID"].'" class="modal fade" role="dialog">
-                      <div class="modal-dialog">
-
-                        <!-- Modal content-->
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                            <h4 class="modal-title">Artikel wijzigen</h4>
-                          </div>
-                          <div class="modal-body">
-                            <form name="editpost" id="editpost" action="'.htmlspecialchars($_SERVER['PHP_SELF']).'" method="post" autocomplete="off" class="form-horizontal">
-                                <span>Titel</span><br /><input type="text" name="titel" id="titel" class="form-control" value="'.$row["post_title"].'"/><br/>
-                                <input type="hidden" name="postid" id="postid" value="'.$row["ID"].'"/>
-                                <input type="hidden" name="id" id="id" value="'.$row["park_id"].'"/>
-                                <span>Artikel</span><br /><textarea type="text" class="form-control" name="article" id="article" placeholder="Typ hier het artikel" value="" rows="10" required>'.str_replace("<br />", "\n", $row["post_body"]).'</textarea>
-                                <button type="submit" class="btn btn-raised btn-success" name="editpostbutton" id="editpostbutton">Opslaan
-                                            </button>
-                            </form>
-                          </div>
-                        </div>
-
-                      </div>
-                    </div>
-                    ';
-                echo '</tr>';
-            }
-            echo '</tbody>';
-            echo '</table>';
-        } else {
-            echo '<p>Er zijn momenteel geen artikelen</p>';
-        }
-        echo '
-                  <a type="button" class="btn-info" href="writearticle.php?id='.$parkid.'">Artikel maken</a>
-            ';
-    }
-    static function updatesettings($mysqli, $id, $logo, $header, $naam, $desc, $ip, $email, $background) {
-        $logosql = '';
-        if(!$logo == '') {
-            $logosql = "logo='$logo',";
-        }
-        $headersql = '';
-        if(!$header == '') {
-            $headersql = "header='$header',";
-        }
-        $backgroundsql = '';
-        if(!$background == '') {
-            $backgroundsql = ",background='$background'";
-        }
-        $ip = strip_tags($ip);
-        $email = strip_tags($email);
-        $desc = strip_tags($desc);
-        $naam = strip_tags($naam);
-        $sql = "UPDATE pco_parks SET ".$logosql." ".$headersql." name='$naam', description='$desc', ip='$ip', email='$email'".$backgroundsql." WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        return $result;
-    }
-    static function getParkRequestRequester($mysqli, $id) {
-        $sql = "SELECT * FROM pco_parkrequest order by ID desc";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            $parkowner = $row['requester'];
-            return $parkowner;
-        }
-    }
-    static function getParkRequestName($mysqli, $id) {
-        $sql = "SELECT * FROM pco_parkrequest order by ID desc";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            $parkname = $row['name'];
-            return $parkname;
-        }
-    }
-    static function refuserequest($mysqli, $id) {
-        $body = '
-            Uw parkaanvraag voor het park <strong>'.park::getParkRequestName($mysqli, $id).'</strong> is gewijgerd. U kunt een park opnieuw aanvragen onder "Parken > Park Aanvragen".';
-        user::sendEmail($mysqli, user::getEmail($mysqli, park::getParkRequestRequester($mysqli, $id)), "Park aanvraag", $body);
-
-        $sql = "UPDATE pco_parkrequest SET rejected='1' WHERE ID = $id";
-        $result = mysqli_query($mysqli, $sql);
-    }
-    static function acceptrequest($mysqli, $id) {
-        $sql = "SELECT * FROM pco_parkrequest WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            $parkname = $row['name'];
-            $parkip = $row['ip'];
-            $parkemail = $row['email'];
-            $parkowner = $row['requester'];
-            $apikey = API::generateAPIKey($mysqli);
-            $sql1 = "INSERT INTO pco_parks (name, ip, email, owner, followers, APIKey) VALUES ('$parkname', '$parkip', '$parkemail', '$parkowner', '$parkowner,', '$apikey')";
-            $result1 = mysqli_query($mysqli, $sql1);
-
-            $sql = "UPDATE pco_parkrequest SET rejected='2' WHERE ID = $id";
-            $result = mysqli_query($mysqli, $sql);
-            $body = '
-            Uw parkaanvraag voor het park <strong>'.$parkname.'</strong> is geaccepteerd. U kunt dit park nu beheren via de navigatiebalk onder "Parken".';
-            user::sendEmail($mysqli, user::getEmail($mysqli, $parkowner), "Park aanvraag", $body);
-        }
-
-    }
-    static function loadrequests($mysqli) {
-        $sql="SELECT * FROM pco_parkrequest WHERE rejected='0'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if($count > 0) {
-            echo '
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Naam</th>
-                        <th>Ip</th>
-                        <th>Twitter</th>
-                        <th>Email</th>
-                        <th>Aanvrager</th>
-                        <th>Aanvraag</th>
-                    </tr>
-                </thead>
-                <tbody>';
-                while($row = mysqli_fetch_assoc($result)) {
-                    echo '<tr>';
-                    echo '<td>'.$row["name"].'</td>';
-                    echo '<td>'.$row["ip"].'</td>';
-                    echo '<td>'.$row["twitter"].'</td>';
-                    echo '<td>'.$row["email"].'</td>';
-                    echo '<td>'.user::getNameByUUID($mysqli, $row["requester"]).'</td>';
-                    echo '<td><a href="staff.php?parkrequest=&refuse='.$row['ID'].'" class="btn-danger">Weigeren</a><br/><a href="staff.php?parkrequest=&accept='.$row['ID'].'" class="btn-success">Accepteren</a></td>';
-                    echo '</tr>';
-                }
-                echo '</tbody>
-            </table>';
-            $sql1="SELECT * FROM pco_parks";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-        } else {
-            echo '<p>Er zijn momenteel geen aanvragen</p>';
-        }
-    }
-    static function request($mysqli, $name, $ip, $twitter, $email) {
-        $name = strip_tags($name);
-        $ip = strip_tags($ip);
-        $twitter = strip_tags($twitter);
-        $email = strip_tags($email);
-        $sql = "INSERT INTO pco_parkrequest (name, ip, twitter, email, requester) VALUES ('$name', '$ip', '$twitter', '$email', '".$_SESSION['UUID']."');";
-        $result = mysqli_query($mysqli, $sql);
-    }
-    static function getName($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['name'];
-        }
-    }
-    static function getBackrgound($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0 && strcmp($row['background'], "") != 0) {
-            return $row['background'];
-        } else {
-            $tijd = date("G");
-            if ($tijd < 6) {
-                $sql="SELECT * FROM pco_backgrounds WHERE tijd='0' ORDER BY RAND() LIMIT 1";
-                $result = mysqli_query($mysqli, $sql);
-                $count = mysqli_num_rows($result);
-                $row = mysqli_fetch_assoc($result);
-                echo '/resources/backgrounds/'.$row["background"];
-            } elseif ($tijd < 12) {
-                $sql="SELECT * FROM pco_backgrounds WHERE tijd='1' ORDER BY RAND() LIMIT 1";
-                $result = mysqli_query($mysqli, $sql);
-                $count = mysqli_num_rows($result);
-                $row = mysqli_fetch_assoc($result);
-                echo '/resources/backgrounds/'.$row["background"];
-            } elseif ($tijd < 18) {
-                $sql="SELECT * FROM pco_backgrounds WHERE tijd='2' ORDER BY RAND() LIMIT 1";
-                $result = mysqli_query($mysqli, $sql);
-                $count = mysqli_num_rows($result);
-                $row = mysqli_fetch_assoc($result);
-                echo '/resources/backgrounds/'.$row["background"];
-            } else {
-                $sql="SELECT * FROM pco_backgrounds WHERE tijd='3' ORDER BY RAND() LIMIT 1";
-                $result = mysqli_query($mysqli, $sql);
-                $count = mysqli_num_rows($result);
-                $row = mysqli_fetch_assoc($result);
-                echo '/resources/backgrounds/'.$row["background"];
-            }
-        }
-
-    }
-    static function getLogo($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            if(empty($row['logo'])) {
-                return 'resources/defaultavatar.png';
-            }
-            return $row['logo'];
-        }
-    }
-    static function getHeader($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            if(empty($row['header'])) {
-                return 'resources/header.jpg';
-            }
-            return $row['header'];
-        }
-    }
-    static function getDescription($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['description'];
-        }
-    }
-    static function getIp($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['ip'];
-        }
-    }
-    static function isDeleted($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($row['deleted'] == 0) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    static function getEmail($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['email'];
-        }
-    }
-    static function IsUserStaff($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if($count1 > 0) {
-                return true;
-            } else {
-                return false;
-            }
-            return false;
-        }
-    }
-    static function IsUserOwner($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    static function CanEditSettings($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if ($count1 > 0) {
-                if ($row1['can_edit_settings'] == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    static function CanWriteArticle($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if ($count1 > 0) {
-                if ($row1['can_write'] == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    static function CanManageStaff($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if ($count1 > 0) {
-                if ($row1['can_manage_staff'] == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    static function CanManageRides($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if ($count1 > 0) {
-                if ($row1['can_manage_rides'] == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    static function CanManageJobs($mysqli, $parkid, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid' AND owner LIKE '%{$userid}%'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return true;
-        } else {
-            $sql1="SELECT * FROM pco_parks_staff WHERE park_id='$parkid' AND uuid='$userid'";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            $row1 = mysqli_fetch_assoc($result1);
-            if ($count1 > 0) {
-                if ($row1['can_manage_jobs'] == 0) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-        }
-    }
-    static function unfollow($mysqli, $parkid, $userid) {
-        if(!park::IsUserStaff($mysqli, $parkid, $userid) || !park::IsUserOwner($mysqli, $parkid, $userid)) {
-            $sql = "UPDATE pco_parks SET followers = REPLACE(followers,'" . $userid . ",','') WHERE ID='$parkid';";
-            $result = mysqli_query($mysqli, $sql);
-        }
-    }
-    static function follow($mysqli, $parkid, $userid) {
-        $sql="UPDATE pco_parks SET followers = CONCAT(followers,'".$userid.",') WHERE ID='$parkid';";
-        $result=mysqli_query($mysqli, $sql);
-    }
-    static function loadWhoToFollow($mysqli, $userid) {
-        $sql="SELECT * FROM pco_parks WHERE followers NOT LIKE '%{$userid}%' AND deleted='0' ORDER BY RAND() LIMIT 5 ";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        while($row = mysqli_fetch_assoc($result)) {
-            $logo = $row['logo'];
-            if(empty($row['logo'])) {
-                $logo = 'resources/defaultavatar.png';
-            }
-            if(!user::IsFollowingPark($mysqli, $row['ID'], $userid) && !park::isDeleted($mysqli, $row['ID'])) {
-                echo '<img class="avatar" src="'.$logo.'" alt=""/><a href="park.php?id='.$row['ID'].'" style="color: black; font-weight: bold;"><span>'.$row['name'].'</span></a><hr />';
-            }
-        }
-    }
-    static function exist($mysqli, $parkid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if($count > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-    static function getFollowers($mysqli, $id) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$id'";
-        $result=mysqli_query($mysqli,$sql);
-        $count=mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        $followers = explode(",", $row['followers']);
-        return (count($followers)-1);
-    }
-    static function LoadParksSearch($mysqli, $pageid, $keyword)
-    {
-        $pageparks = $pageid*50;
-        $sql="SELECT * FROM pco_parks WHERE name LIKE '%{$keyword}%' LIMIT $pageparks, 50";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if ($count > 0) {
-            if($count > 50) {
-                echo '<p>Geef een specefiekere zoekopdracht!</p>';
-                exit;
-            }
-            echo '
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Logo</th>
-                            <th>Naam</th>
-                            <th>Eigenaar</th>
-                            <th>Opties</th>
-                        </tr>
-                    </thead>';
-            echo '<tbody>';
-            while ($row = mysqli_fetch_assoc($result)) {
-                $logo = $row['logo'];
-                if(empty($row['logo'])) {
-                    $logo = 'resources/defaultavatar.png';
-                }
-                $name = $row['name'];
-                $owner = user::getNameByUUID($mysqli, $row['owner']);
-                $parkid = $row['ID'];
-                echo '<tr>';
-                echo '<td><img src="'.$logo.'" alt="" class="avatar"/></td>';
-                echo '<td><a href="park.php?id=' . $parkid . '" class="">'.$name.'</a></td>';
-                echo '<td>'.$owner.'</td>';
-                if(park::isDeleted($mysqli, $parkid)) {
-                    echo '<td><a href="staff.php?parks=' . $parkid . '&undoremove=&pi='.($pageid + 1).'" class="btn-info">Verwijderen ongedaan maken</a></td>';
-                } else {
-                    echo '<td><a href="staff.php?parks=' . $parkid . '&remove=&pi='.($pageid + 1).'" class="btn-danger">Verwijderen</a><br /><a href="parksettings.php?id='.$parkid.'" class="btn-info">Beheren</a></td>';
-                }
-                echo '</tr>';
-            }
-            echo '</tbody>';
-            echo '</table>';
-        } else {
-            echo '<p>Geen parken op deze pagina.</p>';
-        }
-    }
-    static function LoadParks($mysqli, $pageid)
-    {
-        $pageparks = $pageid*50;
-        $sql="SELECT * FROM pco_parks LIMIT $pageparks, 50";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if ($count > 0) {
-            echo '
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Logo</th>
-                            <th>Naam</th>
-                            <th>Eigenaar</th>
-                            <th>Opties</th>
-                        </tr>
-                    </thead>';
-            echo '<tbody>';
-            while ($row = mysqli_fetch_assoc($result)) {
-                $logo = $row['logo'];
-                if(empty($row['logo'])) {
-                    $logo = 'resources/defaultavatar.png';
-                }
-                $name = $row['name'];
-                $owner = user::getNameByUUID($mysqli, $row['owner']);
-                $parkid = $row['ID'];
-                echo '<tr>';
-                echo '<td><img src="'.$logo.'" alt="" class="avatar"/></td>';
-                echo '<td><a href="park.php?id=' . $parkid . '" class="">'.$name.'</a></td>';
-                echo '<td>'.$owner.'</td>';
-                if(park::isDeleted($mysqli, $parkid)) {
-                    echo '<td><a href="staff.php?parks=' . $parkid . '&undoremove=&pi='.($pageid + 1).'" class="btn-info">Verwijderen ongedaan maken</a></td>';
-                } else {
-                    echo '<td><a href="staff.php?parks=' . $parkid . '&remove=&pi='.($pageid + 1).'" class="btn-danger">Verwijderen</a><br /><a href="parksettings.php?id='.$parkid.'" class="btn-info">Beheren</a></td>';
-                }
-                echo '</tr>';
-            }
-            echo '</tbody>';
-            echo '</table>';
-            $sql1="SELECT * FROM pco_parks";
-            $result1 = mysqli_query($mysqli, $sql1);
-            $count1 = mysqli_num_rows($result1);
-            if($count1 > ($pageid+1)*50) {
-                if($pageid > 0) {
-                    echo '<a href="staff.php?parks=&page=' . ($pageid) . '" class="btn btn-danger btn-sm">Terug</a>';
-                }
-                echo '<a href="staff.php?parks=&page=' . ($pageid + 2) . '" class="btn btn-danger btn-sm">Volgende</a>';
-            } else {
-                if ($pageid > 0) {
-                    echo '<a href="staff.php?parks=&page=' . ($pageid) . '" class="btn btn-danger btn-sm">Terug</a>';
-                    if ($count1 > ($pageid + 1) * 50) {
-                        echo '<a href="staff.php?parks=&page=' . ($pageid + 2) . '" class="btn btn-danger btn-sm">Volgende</a>';
-                    }
-                }
-            }
-        } else {
-            echo '<p>Geen parken op deze pagina.</p>';
-        }
-    }
-    static function delete($mysqli, $parkid, $deleted) {
-        $sql = "UPDATE pco_parks SET deleted='$deleted' WHERE ID='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-    }
-    static function getParkIdFromAPIKey($mysqli, $key) {
-        $sql="SELECT * FROM pco_parks WHERE APIKey='$key'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        $row = mysqli_fetch_assoc($result);
-        if($count > 0) {
-            return $row['ID'];
-        } else {
-            return '0';
-        }
-    }
-    static function LoadFollowers($mysqli, $parkid) {
-        $sql="SELECT * FROM pco_parks WHERE ID='$parkid'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        if ($count > 0) {
-            $row = mysqli_fetch_assoc($result);
-            $followers = explode(",", $row['followers']);
-            for($i = 0; $i < (count($followers)-1); $i++) {
-                echo '
-            <div>
-                <span> </span><span class="label '.user::getLabel($mysqli, user::getRankByUUID($mysqli, str_replace(",", "", $followers[$i]))).'">'.user::getPrefix($mysqli, user::getRankByUUID($mysqli, str_replace(",", "", $followers[$i]))).'</span> <span>'.user::getNameByUUID($mysqli, str_replace(",", "", $followers[$i])).'</span>
-                <hr />
-            </div>
-        ';
-            }
-        } else {
-            echo '<p>Geen volgers.</p>';
-        }
-    }
-}
 class common {
     static function random($length) {
         $key = '';
@@ -3204,41 +2485,36 @@ class nav {
     }
 }
 class search {
-    static function loadParks($mysqli, $keywords) {
-        $sql="SELECT * FROM pco_parks WHERE name LIKE '%{$keywords}%' LIMIT 4";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        while($row = mysqli_fetch_assoc($result)) {
-            echo '
-            <div class="col-md-2">
-                <img class="avatar" src="'.park::getLogo($mysqli, $row["ID"]).'" alt="" style="display: block; margin: 0 auto;"/><br />
-                <a href="park.php?id='.$row['ID'].'" style="color: black; font-weight: bold; display: block; margin: 0 auto; text-align: center;"><span>'.$row['name'].'</span></a>
-            </div>
-            ';
-        }
-        if($count == 0) {
-            echo '<p>Geen overeenkomende parken</p>';
-        }
-    }
     static function loadArticles($mysqli, $keywords) {
-        $sql = "SELECT * FROM pco_posts WHERE post_title LIKE '%{$keywords}%' OR post_body LIKE '%{$keywords}%' order by ID desc";
+        $sql = "SELECT * FROM pco_posts WHERE post_text LIKE '%{$keywords}%' order by ID desc";
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
         while($row = mysqli_fetch_assoc($result)) {
-            $title = $row['post_title'];
+            $title = $row['post_text'];
             $postid = $row['ID'];
-            $parkname = park::getName($mysqli, $row['park_id']);
-            $logo = park::getLogo($mysqli, $row['park_id']);
+            $username = user::getNameByUUID($mysqli, $row['user_id']);
             $post = common::random(20);
+
+            $icon = '';
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+                $icon = 'favorite';
+            } else {
+                $icon = 'favorite_border';
+            }
+            $like = '';
+            if (posts::isLiking($mysqli, $postid, $_SESSION['UUID'])) {
+                $like = 'unlike';
+            } else {
+                $like = 'like';
+            }
             echo '
                    <div class="jumbotron">
                        <div>
-                            <img class="avatar" src="' . $logo . '" alt=""/>
-                            <a href="park.php?id=' . $row['park_id'] . '" style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                            <p><span>' . $username . '</span></p>
                         </div>
                         <div class="hover" id="' . $post . '">
                             <div>
-                                <img src="'.$row["post_header"].'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
+                                <img src="'.$row["post_image"].'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
                             </div>
                             <h3>' . $title . '</h3>
                         </div>
@@ -3246,9 +2522,12 @@ class search {
                             var id' . $post . ' = document.getElementById("' . $post . '");
 
                             id' . $post . '.onclick = function() {
-                                window.location.href = "article.php?id=' . $postid . '";
+                                window.location.href = "post.php?id=' . $postid . '";
                             };
                         </script>
+                            <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i><span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
+                            <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.posts::getReactionCount($mysqli, $postid).'</span></span>
+                            <i style="float: right;">Geplaatst op: ' . $row["posted_on"] . '</i>
                     </div>
 
 
@@ -3423,36 +2702,6 @@ class staff {
     }
 }
 class statistics {
-    static function parkRequestsRejected($mysqli) {
-        $sql = "SELECT * FROM pco_parkrequest WHERE rejected='1'";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        return $count;
-    }
-    static function parks($mysqli) {
-        $sql = "SELECT * FROM pco_parks";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        return $count;
-    }
-    static function parkEvents($mysqli) {
-        $sql = "SELECT * FROM pco_parks_events";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        return $count;
-    }
-    static function parkRides($mysqli) {
-        $sql = "SELECT * FROM pco_parks_rides";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        return $count;
-    }
-    static function parkStaff($mysqli) {
-        $sql = "SELECT * FROM pco_parks_staff";
-        $result = mysqli_query($mysqli, $sql);
-        $count = mysqli_num_rows($result);
-        return $count;
-    }
     static function posts($mysqli) {
         $sql = "SELECT * FROM pco_posts";
         $result = mysqli_query($mysqli, $sql);

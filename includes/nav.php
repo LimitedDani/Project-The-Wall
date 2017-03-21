@@ -6,7 +6,7 @@
  * Time: 21:01
  */
 ?>
-<nav class="navbar navbar-danger">
+<nav class="navbar navbar-customjooo">
     <div class="container-fluid">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-inverse-collapse">
@@ -21,6 +21,7 @@
             <ul class="nav navbar-nav">
                 <li <?php if(strcmp($active, "home") == 0) { echo 'class="active"';}?>><a href="home.php">Home</a></li>
                 <li <?php if(strcmp($active, "upload") == 0) { echo 'class="active"';}?>><a href="upload.php">Foto uploaden</a></li>
+                <li <?php if(strcmp($active, "messenger") == 0) { echo 'class="active"';}?>><a href="messenger.php">Berichten <span class="badge text-white" id="chatcounts"><?php echo chats::countNotReadedMessages($mysqli, $_SESSION['UUID']);?></span></a></li>
             </ul>
             <form class="navbar-form navbar-right" action="search.php" method="get">
                 <div class="form-group">
@@ -36,7 +37,6 @@
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li><a href="settings.php">Instellingen</a></li>
-                        <li><a href="settings.php?followed">Volgend</a></li>
                         <li class="divider"></li>
                         <li><a href="logout.php">Uitloggen</a></li>
                     </ul>
@@ -64,5 +64,11 @@
             $(this).parent().addClass('open');
             $(this).parent().find("ul").parent().find("li.dropdown").addClass('open');
         });
+    </script>
+    <script>
+        function countmessages() {
+            $('#chatcounts').load('http://daniquedejong.nl/instawall/chat-api.php?chatcount');
+        }
+        setInterval(countmessages, 1000);
     </script>
 </nav>

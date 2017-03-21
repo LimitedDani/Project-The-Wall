@@ -49,7 +49,7 @@ if(isset($_REQUEST['unlike'])) {
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>InstaWall</title>
+        <title>InstaWall | <?php echo posts::getTitle($mysqli, $id);?></title>
         <script src="assets/js/bootstrap.min.js"></script>
         <?php include 'includes/imports.php';?>
     </head>

@@ -67,7 +67,7 @@ $active = '';
                                             <label for="articleimage" class="col-md-2 control-label"><span class="text-info">Afbeelding<br /></span></label>
                                             <div class="col-md-10" id="headdiv">
                                                 <img src="nothing" alt="Geen afbeelding gekozen" class="img-responsive center-block" id="imgprev"/>
-                                                <input type="file" id="image" multiple="" name="image" accept="image/*" onchange="loadBodyPreview(this)">
+                                                <input type="file" id="image" multiple="" name="image" accept="image/*" onchange="loadBodyPreview(this)" required>
                                                 <input type="text" readonly="" class="form-control" placeholder="Kies een afbeelding" id="phototext">
                                                 <script>
                                                     $("#image").change(function(){
@@ -101,7 +101,7 @@ $active = '';
                                         </div>
                                         <div class="form-group">
 
-                                            <label for="article" class="col-md-2 control-label"><span class="text-info">Bijschrift</span></label>
+                                            <label for="article" class="col-md-2 control-label" required><span class="text-info">Bijschrift</span></label>
                                             <div class="col-md-10" id="titlediv">
                                                 <input type="text" name="text" class="form-control">
                                             </div>
@@ -117,8 +117,8 @@ $active = '';
                 </div>
 
                 <div class="col-md-3 right-container well">
-                    <h4 class="text-danger">Artikel opmaak</h4>
-                    <p class="text-muted">Bij het schrijven van het artikel kun je gebruik maken van tags om het artikel op te maken. </p>
+                    <h4 class="text-danger">Text opmaak</h4>
+                    <p class="text-muted">Bij het schrijven van de beschrijving kun je gebruik maken van tags om de beschrijving op te maken. </p>
                     <p class="text-muted">Gebruik <code>&lt;strong&gt;Hier de text&lt;&#47;strong&gt;</code> om de tekst <strong>dik te maken.</strong></p>
                     <p class="text-muted">Gebruik <code>&lt;i&gt;Hier de text&lt;&#47;i&gt;</code> om de tekst <i>schuin te maken.</i></p>
                     <p class="text-danger">Alle andere tags die worden gebruikt worden verwijderd.</p>
