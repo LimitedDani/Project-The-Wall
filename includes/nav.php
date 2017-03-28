@@ -67,7 +67,7 @@
     </script>
     <script>
         function countmessages() {
-            $('#chatcounts').load('http://daniquedejong.nl/instawall/chat-api.php?chatcount');
+            $('#chatcounts').load('https://daniquedejong.nl/instawall/chat-api.php?chatcount');
         }
         setInterval(countmessages, 1000);
     </script>

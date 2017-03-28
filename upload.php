@@ -62,12 +62,12 @@ $active = '';
                         <div class="panel-body">
                             <div class="row">
                                 <div class="col-md-12">
-                                    <form name="register" id="register" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data" method="post" autocomplete="off" class="form-horizontal">
+                                    <form name="register" id="register" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" enctype="multipart/form-data"enctype="multipart/form-data" method="post" autocomplete="off" class="form-horizontal">
                                         <div class="form-group">
                                             <label for="articleimage" class="col-md-2 control-label"><span class="text-info">Afbeelding<br /></span></label>
                                             <div class="col-md-10" id="headdiv">
                                                 <img src="nothing" alt="Geen afbeelding gekozen" class="img-responsive center-block" id="imgprev"/>
-                                                <input type="file" id="image" multiple="" name="image" accept="image/*" onchange="loadBodyPreview(this)" required>
+                                                <input type="file" id="image" multiple="" name="image" accept="image/*" onchange="loadBodyPreview(this)" data-max-size="2048" required>
                                                 <input type="text" readonly="" class="form-control" placeholder="Kies een afbeelding" id="phototext">
                                                 <script>
                                                     $("#image").change(function(){

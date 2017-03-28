@@ -5,9 +5,9 @@ $password="YALCRi3XflFBpto4";
 $db_name="pco";*/
 
 $host="localhost";
-$username="settlerc_pco";
-$password="zIGoDuOA";
-$db_name=/*"settlerc_insta"*/"insta";
+$username="daniquedejong";
+$password="sJpNDZbJWNWJxws8";
+$db_name="daniquedejong";
 
 
 $mysqli = mysqli_connect($host, $username, $password) or die(mysqli_connect_error());

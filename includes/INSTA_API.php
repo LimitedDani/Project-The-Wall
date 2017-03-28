@@ -1987,7 +1987,7 @@ class posts {
             exit;
         }
         $title = strip_tags($title);
-        $sql = "INSERT INTO pco_posts (user_id, post_text, post_image, posted_on) VALUES ('".$_SESSION["UUID"]."', '$title', '$image', '" . strftime('%e-%m-%Y om %H:%M', time()) . "');";
+        $sql = "INSERT INTO pco_posts (user_id, post_text, post_image, post_likes, posted_on) VALUES ('".$_SESSION["UUID"]."', '$title', '$image', '', '" . strftime('%e-%m-%Y om %H:%M', time()) . "');";
         $result = mysqli_query($mysqli, $sql);
     }
 
