@@ -18,6 +18,7 @@ $active = 'home';
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>InstaWall</title>
         <script src="assets/js/bootstrap.min.js"></script>
+        <script src="https://unpkg.com/masonry-layout@4.1/dist/masonry.pkgd.min.js"></script>
         <?php include 'includes/imports.php';?>
     </head>
     <body>
@@ -43,7 +44,7 @@ $active = 'home';
         <?php } ?>
         <div class="row">
             <div class="col-md-12">
-                <div class="col-md-9">
+                <div class="col-md-12">
                     <div class="panel panel-info">
                         <div class="panel-heading">
                             <h3 class="panel-title">Jouw feed</h3>
@@ -56,10 +57,6 @@ $active = 'home';
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <div class="col-md-3 right-container well">
-                    <?php ads::skycraper();?>
                 </div>
             </div>
         </div>

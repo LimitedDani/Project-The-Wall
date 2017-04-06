@@ -114,3 +114,7 @@ pre span::before {
 .table > tbody > tr > td {
     vertical-align: middle;
 }
+.grid-sizer,
+.grid-item { width: 40%; }
+/* 2 columns wide */
+.grid-item--width2 { width: 60%; }

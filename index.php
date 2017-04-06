@@ -117,14 +117,14 @@ if(isset($_COOKIE["pcoemail"]) && isset($_COOKIE["pcosessionid"])) {
                                 <form name="signin" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off" class="form-horizontal">
                                     <div class="form-group">
                                         <label for="email"><span class="text-info">Email</span></label>
-                                        <input type="email" name="email" id="email" placeholder="Vul hier je email in." value="<? echo $email;?>" class="form-control" autofocus="autofocus" required="required">
+                                        <input type="email" name="email" id="email" placeholder="Vul hier je email in." value="<?php echo $email;?>" class="form-control" autofocus="autofocus" required="required">
                                     </div>
                                     <div class="form-group">
                                         <label for="password"><span class="text-info">Wachtwoord</span></label>
                                         <input type="password" name="password" id="password" placeholder="Vul hier je wachtwoord in." value="" class="form-control" autofocus="autofocus" required="required">
                                     </div>
                                     <?php     if(isset($_GET['redirect'])) {?>
-                                        <input type="hidden" name="redirect" id="redirect" value="<? echo $_GET['redirect'];?>" class="form-control">
+                                        <input type="hidden" name="redirect" id="redirect" value="<?php echo $_GET['redirect'];?>" class="form-control">
                                     <?php }?>
                                     <div class="form-group">
                                         <input type="checkbox" value="rememberme" id="rememberme" name="rememberme">
@@ -149,7 +149,7 @@ if(isset($_COOKIE["pcoemail"]) && isset($_COOKIE["pcosessionid"])) {
                                                 <form name="pass" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off" class="form-horizontal">
                                                     <div class="form-group">
                                                         <label for="email"><span class="text-info">Email</span></label>
-                                                        <input type="email" name="email" id="email" placeholder="Vul hier je email in." value="<? echo $email;?>" class="form-control" autofocus="autofocus" required="required">
+                                                        <input type="email" name="email" id="email" placeholder="Vul hier je email in." value="<?php echo $email;?>" class="form-control" autofocus="autofocus" required="required">
                                                     </div>
                                                     <div class="text-center">
                                                         <button type="submit" class="btn btn-raised btn-success" name="passrequest" >Aanvragen</button>

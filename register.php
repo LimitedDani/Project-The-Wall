@@ -17,7 +17,7 @@ if(isset($_POST['submit'])) {
     $email = $_POST['email'];
     $password = $_POST['pass'];
     $passrepeat = $_POST = ['passrepeat'];
-    if(!($password == $passrepeat)) {
+    if(strcmp($password, $passrepeat) != 0) {
         $warning= "De wachtwoorden komen niet overeen.";
     }
     if(user::exist($mysqli, $email)) {

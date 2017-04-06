@@ -26,7 +26,7 @@ if(!user::excistID($mysqli, $userid)) {
         <?php include 'includes/imports.php'; ?>
         <!--<style>
             body {
-                background: url(<?/*php echo park::getBackrgound($mysqli, $parkid);*/?>);
+                background: url(/*php echo park::getBackrgound($mysqli, $parkid);*/);
                 transition: background 0.5s linear;
                 background-position: center;
                 background-size: 100% 100%;
@@ -59,7 +59,7 @@ if(!user::excistID($mysqli, $userid)) {
             </div>
         <?php } ?>
         <div class="row">
-            <!--<div style=" height: 300px; background: url('<?php /*echo park::getHeader($mysqli, $parkid);*/?>'); background-position: center;
+            <!--<div style=" height: 300px; background: url('?php /*echo park::getHeader($mysqli, $parkid);*/?>'); background-position: center;
                 background-size: cover;
                 background-repeat: no-repeat;" class="panel panel-success">
             </div>!-->
@@ -69,13 +69,13 @@ if(!user::excistID($mysqli, $userid)) {
                 <!--<div class="col-md-12">
                     <div class="col-md-9">
                         <div class="panel panel-info">
-                            <?php /*park::LoadFollowers($mysqli, $parkid);*/?>
+                            ?php /*park::LoadFollowers($mysqli, $parkid);*/?>
                         </div>
                     </div>
                     <div class="col-md-3 right-container well">
                         <h4 class="text-danger">Wie te volgen</h4>
-                        <?php/* park::loadWhoToFollow($mysqli, $_SESSION['UUID']);?>
-                        <?php ads::skycraper();*/?>
+                        ?php/* park::loadWhoToFollow($mysqli, $_SESSION['UUID']);?>
+                        ?php ads::skycraper();*/?>
                     </div>
                 </div>!-->
                 <?php

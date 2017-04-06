@@ -643,12 +643,12 @@ class user {
                             <td>
                                 <h3>Beste, '.$name.'</h3>
                                 <p class="lead">Wat leuk dat je hebt geregistreerd op InstaWall!.</p>
-                                <p>Je bent van plan om bij een van de grootste Minecraft pretpark community aan te sluiten.</p>
                                 <p>InstaWall heeft de volgende functies:</p>
                                 <ul>
-                                    <li>Je favoriete parken te volgen</i>
-                                    <li>Je eigen park aanmelden</i>
-                                    <li>Artikelen schrijven over en voor jouw park</i>
+                                    <li>Mensen volgen</i>
+                                    <li>Foto\'s uploaden</i>
+                                    <li>Reageren</i>
+                                    <li>Liken</li>
                                     <li>En nog veel meer...</i>
                                 </ul>
                                 <!-- Callout Panel -->
@@ -665,7 +665,7 @@ class user {
                                                     <td>
 
                                                         <h5 class="">heb je nog vragen? Je kunt ons hier bereiken:</h5>
-                                                        <p class=""><a href="https://www.facebook.com/ParkCraft-370915049752819/" class="soc-btn fb">Facebook</a> <a href="https://twitter.com/ParkenCraft" class="soc-btn tw">Twitter</a> <a href="https://www.youtube.com/ParkCraft" class="soc-btn gp">YouTube</a></p>
+                                                        <p class=""><a href="https://www.hebbenweniet.nl" class="soc-btn fb">Facebook</a> <a href="https://www.hebbenweniet.nl" class="soc-btn tw">Twitter</a> <a href="https://www.hebbenweniet.nl" class="soc-btn gp">YouTube</a></p>
 
 
                                                     </td>
@@ -2105,6 +2105,7 @@ class posts {
         $sql = "SELECT * FROM pco_posts WHERE deleted='0' order by ID desc";
         $result = mysqli_query($mysqli, $sql);
         $count = mysqli_num_rows($result);
+        echo '<div class="grid" data-masonry=\'{ "itemSelector": ".grid-item", "columnWidth": 100 }\'>';
         while ($row = mysqli_fetch_assoc($result)) {
             $title = $row['post_text'];
             $postid = $row['ID'];
@@ -2126,7 +2127,7 @@ class posts {
                 $like = 'like';
             }
             echo '
-                        <div class="jumbotron hover" id="' . $post . '">
+                        <div class="hover grid-item" id="' . $post . '">
                             <div>
                                 <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                             </div>

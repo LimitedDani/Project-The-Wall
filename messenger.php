@@ -97,10 +97,10 @@ $chatid = $_GET['id'];
                                                     $(window).load(function () {
                                                         $('#chat').modal('show');
                                                         $('#chat').on('hide.bs.modal', function () {
-                                                            window.location = "http://daniquedejong.nl/instawall/messenger.php";
+                                                            window.location = "https://daniquedejong.nl/instawall/messenger.php";
                                                         });
                                                         $('#chat').on('hidden', function () {
-                                                            window.location = "http://daniquedejong.nl/instawall/messenger.php";
+                                                            window.location = "https://daniquedejong.nl/instawall/messenger.php";
                                                         });
                                                     });
                                                 </script>
@@ -114,7 +114,7 @@ $chatid = $_GET['id'];
                                         </div>
                                         <script>
                                             function openChat(id) {
-                                                window.open("messenger.php?id=" + id,"_self")
+                                                window.location = "https://daniquedejong.nl/instawall/messenger.php?id=" + id;
                                             }
                                         </script>
                                     </div>
