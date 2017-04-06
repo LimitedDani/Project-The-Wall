@@ -565,14 +565,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="messenger.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="messenger.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/messenger.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="598">
-              <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+            <state relative-caret-position="399">
+              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="22" selection-end-column="38" />
               <folding>
-                <marker date="1491465395949" expanded="true" signature="5300:5385" ph="{...}" />
-                <marker date="1491465395949" expanded="true" signature="5670:5773" ph="{...}" />
+                <marker date="1491465788807" expanded="true" signature="5536:5621" ph="{...}" />
+                <marker date="1491465788807" expanded="true" signature="5906:6009" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -627,11 +627,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="imports.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/includes/imports.php">
+      <file leaf-file-name="chat-api.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/chat-api.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="651">
-              <caret line="36" column="40" lean-forward="false" selection-start-line="36" selection-start-column="40" selection-end-line="36" selection-end-column="40" />
+            <state relative-caret-position="315">
+              <caret line="15" column="38" lean-forward="false" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
               <folding />
             </state>
           </provider>
@@ -739,7 +739,6 @@
         <option value="$PROJECT_DIR$/profile.php" />
         <option value="$PROJECT_DIR$/includes/chat.js" />
         <option value="$PROJECT_DIR$/includes/nav.php" />
-        <option value="$PROJECT_DIR$/chat-api.php" />
         <option value="$PROJECT_DIR$/includes/CHAT_API.php" />
         <option value="$PROJECT_DIR$/includes/imports.php" />
         <option value="$PROJECT_DIR$/upload.php" />
@@ -749,6 +748,7 @@
         <option value="$PROJECT_DIR$/includes/INSTA_API.php" />
         <option value="$PROJECT_DIR$/includes/css/core.css" />
         <option value="$PROJECT_DIR$/messenger.php" />
+        <option value="$PROJECT_DIR$/chat-api.php" />
       </list>
     </option>
   </component>
@@ -1073,12 +1073,12 @@
       <workItem from="1490797236523" duration="560000" />
       <workItem from="1490818427906" duration="32000" />
       <workItem from="1490962776274" duration="24000" />
-      <workItem from="1491461985998" duration="2573000" />
+      <workItem from="1491461985998" duration="2937000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="342017000" />
+    <option name="totallyTimeSpent" value="342381000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-9" y="-9" width="1938" height="1048" extended-state="6" />
@@ -1245,14 +1245,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="252">
           <caret line="17" column="14" lean-forward="false" selection-start-line="17" selection-start-column="14" selection-end-line="17" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/chat-api.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="294">
-          <caret line="14" column="1" lean-forward="false" selection-start-line="14" selection-start-column="1" selection-end-line="14" selection-end-column="1" />
           <folding />
         </state>
       </provider>
@@ -1932,12 +1924,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/messenger.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="598">
-          <caret line="117" column="0" lean-forward="false" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
+        <state relative-caret-position="399">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="22" selection-end-column="38" />
           <folding>
-            <marker date="1491465395949" expanded="true" signature="5300:5385" ph="{...}" />
-            <marker date="1491465395949" expanded="true" signature="5670:5773" ph="{...}" />
+            <marker date="1491465788807" expanded="true" signature="5536:5621" ph="{...}" />
+            <marker date="1491465788807" expanded="true" signature="5906:6009" ph="{...}" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/chat-api.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="315">
+          <caret line="15" column="38" lean-forward="false" selection-start-line="15" selection-start-column="38" selection-end-line="15" selection-end-column="38" />
+          <folding />
         </state>
       </provider>
     </entry>

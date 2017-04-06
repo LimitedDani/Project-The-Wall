@@ -17,6 +17,10 @@ if(isset($_GET['startchat'])) {
     header("Location: messenger.php?id=".chats::getChatID($mysqli, $_GET['startchat'], $_SESSION['UUID'])."");
     exit;
 }
+header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Secret');
+header('Access-Control-Max-Age: 120');
 $chatid = $_GET['id'];
 ?>
 <?php system::copyRightSign();?>
