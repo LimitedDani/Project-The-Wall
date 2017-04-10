@@ -9,8 +9,6 @@ $cvwl = false;
 include 'includes/phpimports.php';
 if(isset($_POST['submit'])) {
     $title = $_POST['text'];
-    $body = preg_replace("/\r\n|\r/", "<br />", $_POST["article"]);
-    $body = strip_tags($body, '<strong>, <i>, <br>');
     $bodyimg;
     $imgb = $_FILES['image'];
     $bodyimg = common::uploadimage($imgb);

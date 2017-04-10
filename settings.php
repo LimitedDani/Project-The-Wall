@@ -116,7 +116,7 @@ system::copyRightSign();?>
                                                         <a class="btn btn-danger <?php if(!user::getReceiveNewsEmails($mysqli, $_SESSION['UUID'])) { echo 'active';}?>" href="?email&value=off">
                                                             Uit
                                                         </a>
-                                                    </div> Nieuws emails ontvangen van parkcraft
+                                                    </div> Nieuws emails ontvangen van InstaWall
                                                 </label>
                                             </div>
                                         <?php }?>
