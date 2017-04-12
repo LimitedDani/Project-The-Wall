@@ -115,6 +115,7 @@ pre span::before {
     vertical-align: middle;
 }
 .grid-sizer,
-.grid-item { width: 40%; }
+.grid-item { width: 45%; }
+.homeimg { width: 100%; }
 /* 2 columns wide */
 .grid-item--width2 { width: 60%; }

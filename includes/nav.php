@@ -36,7 +36,7 @@
                     <a href="#" data-target="#" class="dropdown-toggle" data-toggle="dropdown"><?php echo user::getName($mysqli) ?>
                         <b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li><a href="profile.php">Profiel</a></li>
+                        <li><a href="profile.php?id=<?php echo $_SESSION['user'];?>">Profiel</a></li>
                         <li><a href="settings.php">Instellingen</a></li>
                         <li class="divider"></li>
                         <li><a href="logout.php">Uitloggen</a></li>

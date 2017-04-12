@@ -2133,7 +2133,7 @@ class posts {
                             </div>
                             <div>
                                 <div>
-                                    <img src="' . $postheader . '" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
+                                    <img src="' . $postheader . '" alt="header" class="center-block homeimg"/>
                                 </div>
                                 <h3>' . $title . '</h3>
                             </div>
@@ -2181,7 +2181,7 @@ class posts {
                     <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
                 </div>
                 <div>
-                    <img src="'.$postheader.'" alt="header" class="img-responsive center-block" style="max-height: 300px;"/>
+                    <img src="'.$postheader.'" alt="header" class="center-block homeimg"/>
                 </div>
                 <span>'.$body.'</span>
                 <hr />
