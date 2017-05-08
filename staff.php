@@ -104,10 +104,8 @@ if(isset($_GET['keywords'])) {
                 <div class="col-md-9">
                     <div class="panel panel-info">
                         <div class="panel-heading">
-                            <?php if(isset($_GET['parkrequest'])) {?>
-                                <h3 class="panel-title">Park Aanvragen</h3>
-                            <?php } else if(isset($_GET['parks'])) {?>
-                                <h3 class="panel-title">Parken</h3>
+                            <?php if(isset($_GET['posts'])) {?>
+                                <h3 class="panel-title">Posts beheren</h3>
                             <?php } else if(isset($_GET['reactions'])) {?>
                                 <h3 class="panel-title">Reacties</h3>
                             <?php } else if(isset($_GET['mail'])) {?>
@@ -116,9 +114,7 @@ if(isset($_GET['keywords'])) {
                                 <h3 class="panel-title">Gebruikers</h3>
                             <?php } else if(isset($_GET['statistics'])) {?>
                                 <h3 class="panel-title">Statistieken</h3>
-                            <?php } else if(isset($_GET['applications'])) {?>
-                                <h3 class="panel-title">Vacatures</h3>
-                            <?php } else{?>
+                            <?php } else {?>
                                 <h3 class="panel-title">Home</h3>
                             <?php }?>
                         </div>
@@ -379,7 +375,7 @@ if(isset($_GET['keywords'])) {
                         <p><a href="?users=&page=1" class="shortcut"><i class="material-icons">accessibility</i><span>Gebruikers beheren</span></a></p>
                     <?php }
                     if(staff::canManagePosts($mysqli, $_SESSION['UUID'])) {?>
-                        <p><a href="?posts=&page=1" class="shortcut"><i class="material-icons">assignment</i><span>Artikelen Beheren</span></a></p>
+                        <p><a href="?posts=&page=1" class="shortcut"><i class="material-icons">assignment</i><span>Posts beheren</span></a></p>
                     <?php }
                     if(staff::canManageComments($mysqli, $_SESSION['UUID'])) {?>
                         <p><a href="?reactions=&page=1" class="shortcut"><i class="material-icons">textsms</i><span>Reacties beheren</span></a></p>
