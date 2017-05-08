@@ -2129,7 +2129,7 @@ class posts {
             echo '
                         <div class="hover grid-item" id="' . $post . '">
                             <div>
-                                <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;"><span>' . $parkname . '</span></a>
+                                <a href="profile.php?id='.user::getIDFromUUID($mysqli, $row['user_id']).'"><span style="color: black; font-weight: bold;">' . $parkname . '</span></a>
                             </div>
                             <div>
                                 <div>
@@ -2144,12 +2144,10 @@ class posts {
                                     window.location.href = "post.php?id=' . $postid . '";
                                 };
                             </script>
-                            <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i><span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
+                            <span class="shortcut"><i class="material-icons heart"><a href="post.php?id=' . $postid . '&' . $like . '" style="text-decoration: none;">' . $icon . '</a></i></span><a href="article.php?id=' . $postid . '&likes" style="color: #000000; text-decoration: none;">' . posts::countLikes($mysqli, $postid) . '</a>
                             <span class="shortcut"><i class="material-icons">mode_comment</i><span>'.posts::getReactionCount($mysqli, $postid).'</span></span>
                             <i style="float: right;">Geplaatst op: ' . $row["posted_on"] . '</i>
                         </div>
-
-
                         ';
         }
     }
