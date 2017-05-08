@@ -13,21 +13,33 @@ $cvwl = false;
 include 'includes/connectdb.php';
 include 'includes/INSTA_API.php';
 if(isset($_POST['submit'])) {
+    require_once "includes/recaptchalib.php";
+    $recaptha = $_POST["g-recaptcha-response"];
+    $secret = "6Lcmth0UAAAAACYTEh047j-VfHYNaxoF_rMZALlr";
+    $reCaptcha = new ReCaptcha($secret);
+    $response = $reCaptcha->verifyResponse(
+        $_SERVER["REMOTE_ADDR"],
+        $recaptha
+    );
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $password = $_POST['pass'];
-    $passrepeat = $_POST = ['passrepeat'];
-    if(strcmp($password, $passrepeat) != 0) {
-        $warning= "De wachtwoorden komen niet overeen.";
-    }
-    if(user::exist($mysqli, $email)) {
-        $warning= "Dit email adres is al in gebruik.";
-    } else {
-        if(user::register($mysqli, $name, $email, $password)) {
-            $info= "Succesvol geregistreerd. Ga naar je mail om je account te activeren.";
-        } else {
-            $danger= "Er is een fout opgetreden, probeer het later opniew.";
+    if($response != null && $response->success) {
+        $password = $_POST['pass'];
+        $passrepeat = $_POST = ['passrepeat'];
+        if (strcmp($password, $passrepeat) != 0) {
+            $warning = "De wachtwoorden komen niet overeen.";
         }
+        if (user::exist($mysqli, $email)) {
+            $warning = "Dit email adres is al in gebruik.";
+        } else {
+            if (user::register($mysqli, $name, $email, $password)) {
+                $info = "Succesvol geregistreerd. Ga naar je mail om je account te activeren.";
+            } else {
+                $danger = "Er is een fout opgetreden, probeer het later opniew.";
+            }
+        }
+    } else {
+        $info = "Vul aub de captcha in!";
     }
 }
 if(isset($_SESSION['user'])) {
@@ -107,6 +119,12 @@ $active = 'home';
                                     <input type="password" class="form-control" name="passrepeat" id="passrepeat" placeholder="Herhaal jouw wachtwoord" value="" onkeyup="passcheck()" required>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="recaptcha" class="col-md-2 control-label"><span class="text-info">ReCaptcha</span></label>
+                                <div class="col-md-10" id="recaptcha">
+                                    <div class="g-recaptcha" data-sitekey="6Lcmth0UAAAAAHnDmpanMym-TT1sDikDMcicyGQk"></div>
+                                </div>
+                            </div>
                             <div class="text-center">
                                 <a href="index.php" class="btn btn-raised btn-primary" name="submit">Terug</a>
                                 <button type="submit" class="btn btn-raised btn-success" name="submit" id="registerbutton">Registreren</button>
@@ -118,6 +136,7 @@ $active = 'home';
         </div>
     </div>
 </div>
+<script src='https://www.google.com/recaptcha/api.js'></script>
 <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
 <script src="assets/js/bootstrap.min.js"></script>
 <script src="assets/js/register.js"></script>

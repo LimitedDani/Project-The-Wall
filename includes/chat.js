@@ -3,7 +3,7 @@
  */
 var id = $('#id').val();
 $(window).load(function() {
-    $('#chatbox').load('https://daniquedejong.nl/instawall/chat-api.php?chat='+id + '');
+    $('#chatbox').load('/instawall/chat-api.php?chat='+id + '');
     setTimeout(
         function()
         {
@@ -11,12 +11,12 @@ $(window).load(function() {
         }, 500);
 });
 function updateChat() {
-    $('#chatbox').load('https://daniquedejong.nl/instawall/chat-api.php?chat='+id + '');
+    $('#chatbox').load('/instawall/chat-api.php?chat='+id + '');
 }
 setInterval(updateChat, 1000);
 $( "#send" ).click(function() {
     var bericht = $('#bericht').val();
-    $.get( "chat-api.php", { sendchat: id, message: bericht } );
+    $.get( "/instawall/chat-api.php", { sendchat: id, message: bericht } );
     $('#bericht').val('');
     setTimeout(
         function()
@@ -25,7 +25,7 @@ $( "#send" ).click(function() {
         }, 500);
 });
 function loadChats() {
-    $('#chats').load('https://daniquedejong.nl/instawall/chat-api.php?loadchats');
+    $('#chats').load('/instawall/chat-api.php?loadchats');
 }
 setInterval(loadChats, 1000);
 function isEmpty( el ){
@@ -34,7 +34,7 @@ function isEmpty( el ){
 $('#bericht').keypress(function(e) {
     if(e.which == 13) {
         var bericht = $('#bericht').val();
-        $.get( "chat-api.php", { sendchat: id, message: bericht } );
+        $.get( "/instawall/chat-api.php", { sendchat: id, message: bericht } );
         $('#bericht').val('');
         setTimeout(
             function()
