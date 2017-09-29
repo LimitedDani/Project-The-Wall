@@ -1,12 +1,7 @@
 <?php
-/*$host="localhost";
-$username="asd";
-$password="YALCRi3XflFBpto4";
-$db_name="pco";*/
-
 $host="localhost";
 $username="root";
-$password="Sierra_123";
+$password="";
 $db_name="thewall";
 
 
